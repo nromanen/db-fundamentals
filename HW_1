@@ -25,3 +25,10 @@ WHERE company_name LIKE 'A%'
 AND city = 'London';
 
 /*result - 0 values */
+
+select country, count(customer_id) as "Owner"
+from customers 
+where country = 'Mexico'
+group by country;
+
+/* Mexico	5 */
