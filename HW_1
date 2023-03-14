@@ -4,3 +4,16 @@ WHERE product_name like 'N%'
   AND unit_price > 50;
   
 /*result 0 values*/
+
+
+
+SELECT city, count(first_name)
+FROM employees
+GROUP BY city;
+
+/*result 1 Redmond
+Redmond 1
+London 4
+Tacoma 1
+Kirkland 1
+Seattle 2 */
