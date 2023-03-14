@@ -17,3 +17,11 @@ London 4
 Tacoma 1
 Kirkland 1
 Seattle 2 */
+
+
+SELECT company_name, city
+FROM suppliers
+WHERE company_name LIKE 'A%'
+AND city = 'London';
+
+/*result - 0 values */
