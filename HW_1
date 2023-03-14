@@ -1,0 +1,6 @@
+SELECT *
+FROM products
+WHERE product_name like 'N%' 
+  AND unit_price > 50;
+  
+/*result 0 values*/
