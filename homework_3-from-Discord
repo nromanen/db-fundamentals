@@ -1,0 +1,33 @@
+/*Retrieve all first names from employees:*/
+SELECT first_name FROM employees;
+
+/*Retrieve all cities where orders were shipped:*/
+SELECT ship_city FROM orders;
+
+/*Get all orders sorted by ship country:*/
+SELECT * FROM orders ORDER BY ship_country;
+
+/*Get all orders sorted by supplier_id in descending order:*/
+SELECT * FROM orders ORDER BY supplier_id DESC;
+
+/*Get products from category with max average price:*/
+SELECT products.*
+FROM products
+JOIN (
+  SELECT AVG(price) AS avg_price, category_id
+  FROM products
+  GROUP BY category_id
+  ORDER BY avg_price DESC
+  LIMIT 1
+) AS max_avg_price
+ON products.category_id = max_avg_price.category_id;
+
+
+/*Get three categories with the largest quantity of products in stock:*/
+SELECT categories.category_name, SUM(products.units_in_stock) AS total_units_in_stock
+FROM products
+JOIN categories
+ON products.category_id = categories.category_id
+GROUP BY categories.category_name
+ORDER BY total_units_in_stock DESC
+LIMIT 3;
