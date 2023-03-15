@@ -1,0 +1,19 @@
+// Show all info about CompanyName and Address from the Customers table.
+
+select company_name, address 
+from customers;
+
+// Show all info about CompanyName and ContactPerson from the Suppliers table.
+
+select company_name, contact_name  
+from suppliers;
+
+// Show all info about ProductName and UnitPrice from the Products table.
+
+select product_name, unit_price  
+from products;
+
+// Show all info about LastName, FirstName, BirthDate and HireDate of Employees.
+
+select last_name, first_name, birth_date, hire_date  
+from employees;
