@@ -1,0 +1,71 @@
+/*Show all info about the employee with ID 8.*/
+select *
+from employees
+where employee_id = 8
+
+
+/*Show the list of first and last names of the employees from London.*/
+select first_name, last_name
+from employees
+where city = 'London';
+
+
+/*Show the list of first and last names of the employees whose first name begins with letter A.*/
+select first_name, last_name
+from employees
+where first_name like 'A%';
+
+
+/*Calculate the count of employees from London.*/
+select count(first_name)
+from employees
+where city = 'London'
+
+
+/*Retrieve all first names from employees*/
+select first_name
+from employees;
+
+
+/*Retrieve all cities where orders were shipped*/
+select distinct ship_city
+from orders;
+
+
+/*Get all orders sorted by ship country*/
+select order_id, ship_country
+from orders
+order by ship_country;
+
+
+/*Get all orders sorted by supplier_id in descending order*/
+select order_id, customer_id
+from orders
+order by customer_id desc;
+
+
+/*Get products from category with max average price*/
+select category_id, avg(unit_price)
+from products
+group by category_id
+having avg(unit_price) > (
+  select avg(unit_price)
+  from products
+);
+
+
+/*Get three categories with the largest quantity of products in stock*/
+select category_id, sum(units_in_stock) as units_in_stock
+from products
+group by category_id
+order by units_in_stock desc
+limit 3;
+
+
+/*Get count of unique ship_name for each ship country in orders table*/
+select ship_country, count(distinct ship_name) as unique_names
+from orders
+group by ship_country;
+
+
+
