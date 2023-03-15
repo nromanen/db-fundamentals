@@ -1,0 +1,84 @@
+
+/* Retrieve all first names from employees */
+
+select first_name 
+from employees;
+
+/* result:
+Nancy
+Andrew
+Janet
+Margaret
+Steven
+Michael
+Robert
+Laura
+Anne
+ */
+-----------------------------------------------
+
+/* Retrieve all cities where orders were shipped */
+
+select distinct ship_city 
+from orders;
+
+/* result: 70 cities  */
+
+-----------------------------------------------
+
+/* Get all orders sorted by ship country */
+
+select order_id, ship_country 
+from orders
+order by ship_country;
+
+/* result: list starts with Argentina and ends by Venezuela  */
+
+-----------------------------------------------
+
+/* Get all orders sorted by supplier_id in descending order  */
+
+select order_details.order_id, products.supplier_id
+from order_details 
+inner join products on order_details.product_id = products.product_id
+order by products.supplier_id desc;
+
+/* result: list starts with  order_id 10562  */
+
+-----------------------------------------------
+
+/* Get products from category with max average price */
+
+select product_name, unit_price, category_id
+from products  
+where category_id = (
+    select category_id
+    from products
+    group by category_id 
+    order by avg(unit_price) desc 
+    limit 1
+);
+
+/* result: 
+Mishi Kobe Niku
+Alice Mutton
+Thüringer Rostbratwurst
+Perth Pasties
+Tourtière
+Pâté chinois */
+
+-----------------------------------------------
+
+/* Get three categories with the largest quantity of products in stock */
+
+select categories.category_name, sum(products.units_in_stock) as stock_products_quantity
+from categories 
+inner join products on products.category_id = categories.category_id
+group by categories.category_name 
+order by stock_products_quantity desc
+limit 3;
+
+/* result: 
+Seafood	701
+Beverages	559
+Condiments	507 */
