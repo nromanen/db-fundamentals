@@ -1,0 +1,13 @@
+Show all info about the employee with ID 8.
+SELECT * FROM Employees WHERE EmployeeID = 8;
+
+Show the list of first and last names of the employees from London.
+SELECT FirstName, LastName FROM Employees WHERE City = 'London';
+
+Show the list of first and last names of the employees whose first name begins with letter A.
+SELECT FirstName, LastName FROM Employees WHERE FirstName LIKE 'A%';
+
+Calculate the count of employees from London.
+SELECT COUNT(FirstName) FROM Employees WHERE City = 'London';
+
+
