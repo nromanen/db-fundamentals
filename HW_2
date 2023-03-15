@@ -8,7 +8,7 @@ union
 ,unit_price 
 from products p 
 order by unit_price desc
-limit 1)
+limit 1);
 
 /* result 
 Côte de Blaye	263.5
@@ -22,3 +22,9 @@ where unit_price > (
 select avg(unit_price )
 from products);
 
+
+select product_name 
+, unit_price 
+from products
+order by unit_price desc 
+limit 10;
