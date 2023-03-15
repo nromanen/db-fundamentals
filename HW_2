@@ -28,3 +28,12 @@ select product_name
 from products
 order by unit_price desc 
 limit 10;
+
+
+
+select (e.last_name  || ' ' ||e.first_name ) as employee
+,sum(freight)
+from orders o
+inner join employees e  
+on o.employee_id  = e.employee_id 
+group by e.employee_id
