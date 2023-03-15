@@ -1,0 +1,16 @@
+(select product_name
+,unit_price 
+from products p 
+order by unit_price
+limit 1)
+union 
+(select product_name
+,unit_price 
+from products p 
+order by unit_price desc
+limit 1)
+
+/* result 
+Côte de Blaye	263.5
+Geitost	2.5 */
+
