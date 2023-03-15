@@ -1,0 +1,23 @@
+// Show all info about the employee with ID 8.
+
+select *  
+from employees
+where employee_id = 8;
+
+// Show the list of first and last names of the employees from London.
+
+select first_name, last_name 
+from employees
+where city like 'London';
+
+// Show the list of first, last names and ages of the employees whose age is greater than 55. 
+
+select first_name, last_name, extract(year from age(current_date, birth_date)) 
+from employees
+where extract(year from age(current_date, birth_date)) > 55;
+
+// Show the list of products with the price between 10 and 50.
+
+select * 
+from products
+where unit_price between 10 and 50;
