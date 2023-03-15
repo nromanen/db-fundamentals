@@ -14,3 +14,11 @@ limit 1)
 Côte de Blaye	263.5
 Geitost	2.5 */
 
+
+select product_name
+,unit_price 
+from products
+where unit_price > (
+select avg(unit_price )
+from products);
+
