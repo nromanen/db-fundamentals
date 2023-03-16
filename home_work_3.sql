@@ -72,7 +72,7 @@ group by e.city;
 
 select *
 from suppliers s 
-where company_name like 'A%' and city = 'London';
+where company_name like 'A%' and city like 'London';
 
 /*4. Show the list of first, last names and ages of the employees whose age is greater than average age of all employees.
   The result should be sorted by last name.*/
@@ -81,4 +81,4 @@ where company_name like 'A%' and city = 'London';
 
 select count(customer_id) 
 from customers c 
-where contact_title = 'Owner';
+where contact_title like 'Owner';
