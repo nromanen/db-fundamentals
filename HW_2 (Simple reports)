@@ -95,28 +95,3 @@ where units_on_order > units_in_stock;
 
 
 
-VARIANT 2 (WITH FUNC AGE)
-
-select
-min(age(birth_date))
-, avg(age(birth_date))
-, max(age(birth_date))
-from employees;
-
-
-select
-city
-, min(age(birth_date))
-, avg(age(birth_date))
-, max(age(birth_date))
-from employees
-group by city;
-
-
-
-
-
-
-
-
-
