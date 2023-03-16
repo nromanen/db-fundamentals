@@ -1,0 +1,18 @@
+select  product_name
+from products p  
+where  product_name like 'N%' and unit_price > 50;
+
+
+select city, count(*) as total_employees
+from employees
+group by city;
+
+
+select  company_name
+from suppliers
+where company_name like  'A%' and  city = 'London';
+
+
+select count(*) as count_of
+from customers
+where country = 'Mexico' and contact_title = 'Owner';
