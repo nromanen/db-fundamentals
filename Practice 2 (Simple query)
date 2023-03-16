@@ -1,0 +1,9 @@
+SELECT
+min((date(now())- date(birth_date))/365)
+, avg((date(now())- date(birth_date))/365)
+, max((date(now())- date(birth_date))/365)
+from employees;
+
+/* result
+min       avg           max
+57	66.6666666666666667	85 */
