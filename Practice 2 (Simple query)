@@ -56,5 +56,19 @@ Tacoma	71	71.0	71
 Seattle	65	69.5	74 */
 
 
+select 
+first_name 
+, last_name 
+, (date(now())- date(birth_date))/365 as age
+from employees
+order by (date(now())- date(birth_date))/365 desc
+limit 3;
+
+
+/*result Margaret	Peacock	85
+Nancy	Davolio	74
+Andrew	Fuller	71 */
+
+
 
 
