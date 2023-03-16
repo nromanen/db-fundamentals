@@ -24,3 +24,12 @@ Tacoma	  71	71	71
 Kirkland	59	59	59
 Seattle	  65	69	74 */
 
+select
+city
+,min((date(now())- date(birth_date))/365) as min
+, avg((date(now())- date(birth_date))/365) as avg
+, max((date(now())- date(birth_date))/365) as max
+from employees
+group by city
+having avg((date(now())- date(birth_date))/365) > 60;
+
