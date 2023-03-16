@@ -1,0 +1,79 @@
+Tasks (softserve.academy)
+
+Given the Northwind database (see the structure below).
+Show all info about the employee with ID 8.
+
+SELECT *
+FROM Employees
+WHERE EmployeeID LIKE 8
+
+Given the Northwind database (see the structure below).
+Show the list of first and last names of the employees from London.
+
+SELECT FirstName
+, LastName
+FROM Employees
+WHERE City LIKE 'London'
+
+Given the Northwind database (see the structure below).
+Show the list of first and last names of the employees whose first name begins with letter A.
+
+SELECT FirstName
+, LastName
+FROM Employees
+WHERE FirstName LIKE 'A%'
+
+Given the Northwind database (see the structure below).
+Calculate the count of employees from London.
+
+SELECT COUNT(FirstName)
+FROM Employees
+WHERE City LIKE 'London'
+
+Tasks (discord)
+
+Retrieve all first names from employees
+
+select first_name
+from employees 
+
+Retrieve all cities where orders were shipped
+
+select distinct ship_city 
+from orders
+
+Get all orders sorted by ship country 
+
+select *
+from orders
+order by ship_country 
+
+Get all orders sorted by supplier_id in descending order
+
+select *
+from orders
+order by customer_id desc 
+
+Get product from category with max average price 
+
+select avg(unit_price) 
+from products
+group by category_id 
+order by 1 desc 
+limit 1
+
+Get three categories with the largest quantity of products in stock
+
+select max(units_in_stock)  
+from products
+group by category_id 
+order by 1 desc 
+limit 3
+
+Get count of unique ship_name for each ship country in orders  table 
+
+select  count(distinct ship_name)
+from orders
+group by ship_country 
+
+
