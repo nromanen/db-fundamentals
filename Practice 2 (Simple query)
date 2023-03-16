@@ -1,76 +1,44 @@
-SELECT
-min((date(now())- date(birth_date))/365)
-, avg((date(now())- date(birth_date))/365)
-, max((date(now())- date(birth_date))/365)
-from employees;
-
-/* result
-min       avg           max
-57	66.6666666666666667	85 */
+select 
+	min(extract(year from age(birth_date)))
+	,avg(extract(year from age(birth_date)))
+	,max(extract(year from age(birth_date)))
+from employees; 
 
 
-select
-city
-,min((date(now())- date(birth_date))/365)
-, avg((date(now())- date(birth_date))/365)
-, max((date(now())- date(birth_date))/365)
-from employees
+select city
+	,min(extract(year from age(birth_date)))
+	,avg(extract(year from age(birth_date)))
+	,max(extract(year from age(birth_date)))
+from employees 
 group by city;
 
-/*result 
-Redmond	  85	85	85
-London	  57	61	68
-Tacoma	  71	71	71
-Kirkland	59	59	59
-Seattle	  65	69	74 */
+
+select city
+	,min(extract(year from age(birth_date)))
+	,avg(extract(year from age(birth_date)))
+	,max(extract(year from age(birth_date)))
+from employees 
+group by city 
+having avg(extract(year from age(birth_date))) > 60;
+
 
 select
-city
-,min((date(now())- date(birth_date))/365) as min
-, avg((date(now())- date(birth_date))/365) as avg
-, max((date(now())- date(birth_date))/365) as max
+	first_name
+	,last_name
+	,extract(year from age(birth_date)) as age
 from employees
-group by city
-having avg((date(now())- date(birth_date))/365) > 60;
-
-/* result
-Redmond	85	85.0000000000000000	85
-London	57	61.5000000000000000	68
-Tacoma	71	71.0000000000000000	71
-Seattle	65	69.5000000000000000	74 */
-
-select 
-first_name 
-, last_name 
-, (date(now())- date(birth_date))/365 as age
-from employees
-where (date(now())- date(birth_date))/365 = (
-select 
-max(date(now())- date(birth_date))/365 as age
+where extract(year from age(birth_date)) = (select
+max(extract(year from age(birth_date)))
 from employees);
 
-/* result 
-Redmond	85	85.0	85
-London	57	61.5	68
-Tacoma	71	71.0	71
-Seattle	65	69.5	74 */
 
-
-select 
-first_name 
-, last_name 
-, (date(now())- date(birth_date))/365 as age
+select
+	first_name
+	,last_name
+	,extract(year from age(birth_date)) as age
 from employees
-order by (date(now())- date(birth_date))/365 desc
+order by extract(year from age(birth_date)) desc
 limit 3;
-
-
-/*result Margaret	Peacock	85
-Nancy	Davolio	74
-Andrew	Fuller	71 */
-
-
-/* Variant 2 using FUNC AGE() and EXTRACT()
 
 
 
