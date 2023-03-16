@@ -7,3 +7,20 @@ from employees;
 /* result
 min       avg           max
 57	66.6666666666666667	85 */
+
+
+select
+city
+,min((date(now())- date(birth_date))/365)
+, avg((date(now())- date(birth_date))/365)
+, max((date(now())- date(birth_date))/365)
+from employees
+group by city;
+
+/*result 
+Redmond	  85	85	85
+London	  57	61	68
+Tacoma	  71	71	71
+Kirkland	59	59	59
+Seattle	  65	69	74 */
+
