@@ -1,0 +1,21 @@
+
+/*1. Show the list of products which names start form ‘N’ and price is greater than 50*/
+
+select product_name, unit_price 
+from products p 
+where product_name like 'N%' and unit_price > 50;
+
+/*2. Show the total number of employees which live in the same city.*/
+select count(city), city 
+from employees e 
+group by city  
+
+/*3. Show the list of suppliers which name begins with letter ‘A’ and are situated in London.*/
+select company_name, city 
+from customers c 
+where company_name like 'A%' and city like 'London';
+
+/*4. Calculate the count of customers from Mexico and contact signed as ‘Owner’*/
+select concat_WS(' ', count(customer_id), 'Owner') as customers_from_Mexico
+from customers
+where country like 'Mexico';
