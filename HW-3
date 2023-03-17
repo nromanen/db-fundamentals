@@ -1,1 +1,53 @@
+select * 
+from employees
+where employee_id = 8;
+
+select first_name, last_name 
+from employees
+where city = 'London';
+
+select first_name, last_name 
+from employees
+where first_name like 'A%';
+
+select count(first_name) 
+from employees
+where city = 'London';
+
+
+
+
+--Retrieve all first names from employees
+select first_name 
+from employees;
+
+--Retrieve all cities where orders were shipped
+select ship_city 
+from orders;
+
+--Get all orders sorted by ship country
+select*
+from orders
+order by ship_country;
+
+--Get all orders sorted by supplier_id in descending order
+select*
+from suppliers
+order by supplier_id desc;
+
+--Get products from category with max average price 
+select  product_name, unit_price 
+from products
+where unit_price  = (select unit_price from products
+    group by unit_price 
+    order by avg(unit_price) DESC
+    limit 1
+)
+
+--Get three categories with the largest quantity of products in stock
+select product_name, sum(units_in_stock) as total_quantity
+from products
+group by product_name 
+order by total_quantity DESC
+limit 3;
 
