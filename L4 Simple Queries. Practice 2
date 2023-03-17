@@ -1,0 +1,72 @@
+--Calculate the greatest, the smallest and the average age among the employees from London
+
+select max(extract(year from age(e.birth_date))) as greatest_age
+, avg(extract(year from age(e2.birth_date))) as average_age
+, min(extract(year from age(e3.birth_date))) as smallest_age
+from employees e
+inner join employees e2 on e.employee_id = e2.employee_id
+inner join employees e3 on e.employee_id = e3.employee_id;
+
+/*result: 
+85	66.6666666666666667	57 */
+
+
+--Calculate the greatest, the smallest and the average age of the employees for each city.
+
+select e.city 
+, max(extract(year from age(e.birth_date))) as greatest_age
+, avg(extract(year from age(e2.birth_date))) as average_age
+, min(extract(year from age(e3.birth_date))) as smallest_age
+from employees e
+inner join employees e2 on e.employee_id = e2.employee_id
+inner join employees e3 on e.employee_id = e3.employee_id
+group by e.city
+order by greatest_age desc;
+
+/*result:
+Redmond85	85 	85
+Seattle	74	69.5 	65
+Tacoma	71	71 	71
+London	68	61.5 	57
+Kirkland	59	59 	59 */
+
+
+--Show the list of cities in which the average age of employees is greater than 60 (the average age is also to be shown)
+
+select e.city
+, avg(extract(year from age(e.birth_date))) as avarage_age
+from employees e
+group by e.city
+having avg(extract(year from age(e.birth_date))) > 60
+order by avarage_age;
+
+/* result:
+London	 61.5
+Seattle	 69.5
+Tacoma	  71
+Redmond  85*/ 
+
+--Show the first and last name(s) of the eldest employee(s)
+
+select e.first_name
+, e.last_name 
+, extract(year from age(e.birth_date)) as employee_age
+from employees e
+order by employee_age desc
+limit 1;
+
+/* result:
+Margaret Peacock	85 */
+
+--Show first, last names and ages of 3 eldest employees.
+select e.first_name
+, e.last_name 
+, extract(year from age(e.birth_date)) as employee_age
+from employees e
+order by employee_age desc
+limit 3;
+
+/* result:
+Margaret Peacock	85
+Nancy Davolio	        74
+Andrew Fuller	                71 */
