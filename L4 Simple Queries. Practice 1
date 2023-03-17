@@ -1,0 +1,70 @@
+--Write a query to get most expense and least expensive Product list (name and unit price).
+
+(select product_name
+, unit_price 
+from products
+order by unit_price
+limit 1)
+union all
+(select product_name
+, unit_price 
+from products
+order by unit_price desc 
+limit 1);
+
+/* result:
+Geitost	2.5
+Côte de Blaye	263.5 */
+
+--Write a query to get Product list (name, unit price) of above average price. 
+
+select product_name
+, unit_price 
+from products
+where unit_price > (
+    select avg(unit_price) 
+    from products)
+order by unit_price;   
+
+/* result: 25 records */
+
+--Write a query to get Product list (name, unit price) of ten most expensive products.
+
+select product_name
+, unit_price 
+from products
+order by unit_price desc
+limit 10;  
+
+/* result: 
+Mishi Kobe Niku	97.0
+Sir Rodney's Marmalade	81.0
+Carnarvon Tigers	62.5
+Raclette Courdavault	55.0
+Manjimup Dried Apples	53.0
+Tarte au sucre	49.3
+Ipoh Coffee	46.0
+Rössle Sauerkraut	45.6
+ */
+
+--For each employee that served the order (identified by employee_id), calculate a total freight.
+
+select e.employee_id
+, concat(e.first_name,' ', e.last_name) as employee
+, SUM(o.freight) as total_freight
+from orders o 
+inner join employees e on o.employee_id = e.employee_id
+group by e.employee_id
+order by e.employee_id; 
+
+/* result:
+1	Nancy Davolio	8836.639
+2	Andrew Fuller	8696.408
+3	Janet Leverling	10884.537
+4	Margaret Peacock	11346.138
+5	Steven Buchanan	3918.7104
+6	Michael Suyama	3780.4695
+7	Robert King	6665.4404
+8	Laura Callahan	7487.8804
+9	Anne Dodsworth	3326.2598
+*/
