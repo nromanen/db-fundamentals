@@ -1,17 +1,28 @@
+*Show the list of products which names start form ‘N’ and price is greater than 50.*
+
 select  product_name
 from products p  
 where  product_name like 'N%' and unit_price > 50;
 
+
+
+*Show the total number of employees which live in the same city.*
 
 select city, count(*) as total_employees
 from employees
 group by city;
 
 
+
+*Show the list of suppliers which name begins with letter ‘A’  and are situated in London.*
+
 select  company_name
 from suppliers
 where company_name like  'A%' and  city = 'London';
 
+
+
+*Calculate the count of customers from Mexico and contact signed as ‘Owner’.*
 
 select count(*) as count_of
 from customers
