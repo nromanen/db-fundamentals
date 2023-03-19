@@ -1,4 +1,4 @@
-	--HOME_TASK_4
+	--Practice_4
 --1. Write a query to get most expense and least expensive Product list (name and unit price).
 
 	select product_name, unit_price from products where unit_price =(select max(unit_price) from products as max_tab);
