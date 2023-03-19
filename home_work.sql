@@ -14,7 +14,8 @@ from products p join categories c
 on p.category_id = c.category_id
 group by c.category_name;
 
-select c.category_name, sum(units_in_stock) as max_quantity
+select c.category_name
+, sum(units_in_stock) as max_quantity
 from products p join categories c 
 on p.category_id = c.category_id 
 group by c.category_name
