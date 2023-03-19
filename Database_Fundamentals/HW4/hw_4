@@ -1,0 +1,41 @@
+	--HOME_TASK_4
+--1. Write a query to get most expense and least expensive Product list (name and unit price).
+
+	select product_name, unit_price from products where unit_price =(select max(unit_price) from products as max_tab);
+
+--2. Write a query to get Product list (name, unit price) of above average price. 
+
+	select product_name, unit_price from products where unit_price > (select avg(unit_price) from products) order by unit_price;
+
+--3. Write a query to get Product list (name, unit price) of ten most expensive products.
+
+	select product_name, unit_price from products order by unit_price desc limit 10;
+
+--4. For each employee that served the order (identified by employee_id), calculate a total freight.
+	
+	select employee_id, sum(freight) from orders group by employee_id order by employee_id;
+	
+--5. Calculate the greatest, the smallest and the average age among the employees from London.
+	
+	select  floor(max(extract(year from age(birth_date)))) as max_age from employees where city='London';
+	select  floor(min(extract(year from age(birth_date)))) as min_age from employees where city='London';
+	select  floor(avg(extract(year from age(birth_date)))) as avg_age from employees where city='London';
+	
+--6. Calculate the greatest, the smallest and the average age of the employees for each city.
+	
+	select floor(max(extract(year from age(birth_date)))) as max_age from employees;
+	select floor(min(extract(year from age(birth_date)))) as max_age from employees;
+	select floor(avg(extract(year from age(birth_date)))) as max_age from employees;
+	
+--7. Show the list of cities in which the average age of employees is greater than 60 (the average age is also to be shown)
+	
+	select great_avg.floor as avg_age, great_avg.city from (select avg_age.city, floor(avg(avg_age.date_part)) from (select city, first_name, extract(year from age(birth_date)) from employees) as avg_age group by avg_age.city)as great_avg where great_avg.floor>60;
+	
+--8. Show the first and last name(s) of the eldest employee(s).
+	
+	select first_name, last_name, floor(max(extract(year from age(birth_date)))) as age from employees group by first_name, last_name;
+	
+--9. Show first, last names and ages of 3 eldest employees.
+	
+	select first_name, last_name, extract(year from age(birth_date)) from employees order by birth_date limit 3;
+	
