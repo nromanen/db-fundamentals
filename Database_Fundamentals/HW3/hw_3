@@ -1,0 +1,24 @@
+	--HOME_TASK_3
+--1. Retrieve all first names from employees
+
+	select first_name from employees;
+
+--2. Retrieve all cities where orders were shipped
+
+	select ship_city from orders;
+
+--3. Get all orders sorted by ship country 
+
+	select * from orders order by ship_country;
+
+--4. Get all orders sorted by supplier_id in descending order
+
+	select * from orders left join (select order_details.order_id from order_details left join products on order_details.product_id = products.product_id order by products.supplier_id desc) as i on i.order_id = orders.order_id;
+
+--5. Get products from category with max average price 
+
+	select product_name from (select prod.product_name, prod.category_id from products prod where prod.category_id = (select avg_tab.category_id from (select p.category_id, avg(p.unit_price) from products p group by p.category_id) as avg_tab order by avg_tab.avg desc limit 1))as max_tab;
+
+--6. Get three categories with the largest quantity of products in stock
+
+	select stock_tab.category_id, stock_tab.product_name, c.category_name, stock_tab.units_in_stock from (select category_id, product_name, units_in_stock  from products order by units_in_stock desc limit 3) as stock_tab inner join categories c on stock_tab.category_id=c.category_id;
