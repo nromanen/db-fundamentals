@@ -17,15 +17,11 @@
 	
 --5. Calculate the greatest, the smallest and the average age among the employees from London.
 	
-	select  floor(max(extract(year from age(birth_date)))) as max_age from employees where city='London';
-	select  floor(min(extract(year from age(birth_date)))) as min_age from employees where city='London';
-	select  floor(avg(extract(year from age(birth_date)))) as avg_age from employees where city='London';
+	select  floor(max(extract(year from age(birth_date)))) as max_age, floor(min(extract(year from age(birth_date)))) as min_age, floor(avg(extract(year from age(birth_date)))) as avg_age from employees where city='London';
 	
 --6. Calculate the greatest, the smallest and the average age of the employees for each city.
 	
-	select floor(max(extract(year from age(birth_date)))) as max_age from employees;
-	select floor(min(extract(year from age(birth_date)))) as max_age from employees;
-	select floor(avg(extract(year from age(birth_date)))) as max_age from employees;
+	select city, floor(max(extract(year from age(birth_date)))) as max_age, floor(min(extract(year from age(birth_date)))) as min_age,  floor(avg(extract(year from age(birth_date)))) as avg_age from employees group by employees.city;
 	
 --7. Show the list of cities in which the average age of employees is greater than 60 (the average age is also to be shown)
 	
