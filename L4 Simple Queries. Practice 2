@@ -15,13 +15,10 @@ inner join employees e3 on e.employee_id = e3.employee_id;
 
 select e.city 
 , max(extract(year from age(e.birth_date))) as greatest_age
-, avg(extract(year from age(e2.birth_date))) as average_age
-, min(extract(year from age(e3.birth_date))) as smallest_age
+, avg(extract(year from age(e.birth_date))) as average_age
+, min(extract(year from age(e.birth_date))) as smallest_age
 from employees e
-inner join employees e2 on e.employee_id = e2.employee_id
-inner join employees e3 on e.employee_id = e3.employee_id
-group by e.city
-order by greatest_age desc;
+group by e.city;
 
 /*result:
 Redmond85	85 	85
