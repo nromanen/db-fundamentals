@@ -1,0 +1,99 @@
+--Show the list of first and last names and ages of the employees over 55. The result should be sorted by last name.
+select 
+	first_name,
+	last_name, 
+	extract(year from age(now(),birth_date)) as "Age"
+from employees
+where extract(year from age(now(),birth_date))>55
+order by last_name;
+
+--Calculate the greatest, the smallest and the average age among the employees from London.
+select
+	max(extract(year from age(now(),birth_date))) as max_age,
+	min(extract(year from age(now(),birth_date))) as min_age,
+	avg(extract(year from age(now(),birth_date))) as avg_age
+from employees 
+where city like 'London'
+group by city;
+
+--Calculate the greatest, the smallest and the average age of the employees for each city.
+select
+	city,
+	max(extract(year from age(now(),birth_date))) as max_age,
+	min(extract(year from age(now(),birth_date))) as min_age,
+	avg(extract(year from age(now(),birth_date))) as avg_age
+from employees 
+group by city;
+
+--Show first, last names and dates of birth of the employees who celebrate their birthdays this month.
+select 
+	first_name,
+	last_name,
+	birth_date 
+from employees 
+where date_part('month', birth_date) = date_part('month', now()); 
+
+--Show first and last names of the employees who used to serve orders shipped to Madrid. The result set would be ordered by first name.
+select distinct  
+	e.first_name,
+	e.last_name
+from employees e
+inner join orders o 
+on e.employee_id = o.employee_id 
+where o.ship_city like 'Madrid'
+order by e.first_name; 
+
+/*Write the query, which will show the first and last names of the employees (whether they served orders or not) as well as the count of orders (CountOfOrders) where served by each of them. 
+
+Note. Use LEFT join*/
+select
+	e.first_name,
+	e.last_name,
+	count(o.order_id) as count_of_orders
+from employees e 
+left join orders o 
+	on e.employee_id =o.employee_id 
+group by e.first_name, e.last_name 	
+order by e.first_name; 
+
+--Show first and last names of the employees as well as the count of their orders shipped after required date during the year 1997 (use left join).
+select
+	e.first_name,
+	e.last_name,
+	count(o.order_id) as count_of_orders
+from employees e 
+left join orders o 
+	on e.employee_id = o.employee_id 
+	and extract(year from o.order_date) = 1997 and o.shipped_date>o.required_date 
+group by e.first_name, e.last_name
+order by e.first_name; 
+
+--Show the list of french customers’ names who have made more than one order (use grouping).
+select
+	c.contact_name,
+	count(o.order_id) as count_of_orders
+from customers c 
+	inner join orders o 
+	on c.customer_id = o.customer_id 
+where c.country like 'France'	
+group by c.contact_name 
+having count(o.order_id)>1
+order by c.contact_name;
+
+--Вивести товари, які мають найбільшу сумму відхилень від заданної ціни в замовленнях
+select 
+	p.product_name
+from products p 
+inner join order_details od 
+	on p.product_id = od.product_id 
+	and p.unit_price != od.unit_price 
+group by p.product_name
+having sum(abs(p.unit_price-od.unit_price)) = (select 
+		sum(abs(p.unit_price-od.unit_price))
+	from products p 
+	inner join order_details od 
+		on p.product_id = od.product_id 
+		and p.unit_price != od.unit_price 
+	group by p.product_name
+	order by sum(abs(p.unit_price-od.unit_price )) desc
+	limit 1);
