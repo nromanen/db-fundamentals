@@ -1,0 +1,130 @@
+--Write a query to get Product name and quantity/unit. 
+
+select product_name
+, quantity_per_unit 
+from products;
+
+/* result:
+Chai	10 boxes x 30 bags
+Chang	24 - 12 oz bottles
+….
+*/
+
+--Write a query to get current Product list (Product ID and name). 
+select product_id
+, product_name 
+from products;
+
+/* result:
+1	Chai
+2	Chang
+3	Aniseed Syrup
+…. */
+
+--Write a query to get discontinued Product list (Product ID and name). 
+
+select product_id
+, product_name 
+from products
+where discontinued  = '1'; 
+
+/*result:
+10 rows */
+
+
+--Write a query to get most expense and least expensive Product list (name and unit price). 
+
+select product_name as least_expensive_products
+from products
+order by unit_price desc
+limit 5;
+
+/* result: 
+Côte de Blaye
+Thüringer Rostbratwurst
+Mishi Kobe Niku
+Sir Rodney's Marmalade
+Carnarvon Tigers */
+
+select product_name as most_expensive_products
+from products
+order by unit_price asc
+limit 5;
+
+/* result: 
+Geitost
+Guaraná Fantástica
+Konbu
+Filo Mix
+Tourtière */
+
+--Write a query to get Product list (id, name, unit price) where current products cost less than $20. 
+
+select product_id
+, product_name
+, unit_price 
+from products
+where unit_price < 20;
+
+/* result: 
+39 rows */
+
+--Write a query to get Product list (id, name, unit price) where products cost between $15 and $25. 
+
+select product_id
+, product_name
+, unit_price 
+from products
+where unit_price between 15 and 25;
+
+
+/* result: 
+24 rows */
+
+
+--Write a query to get Product list (name, unit price) of above average price. 
+
+select product_name
+, unit_price 
+from products
+where unit_price > (
+    select avg(unit_price)
+    from products
+);
+
+/*result:
+25 rows */
+
+--Write a query to get Product list (name, unit price) of ten most expensive products. 
+
+select product_name
+, unit_price 
+from products
+order by unit_price desc 
+limit 10;
+
+/* result: 
+10 rows */
+
+--Write a query to count current and discontinued products
+
+select count(product_id) as current_and_discontinued_products_number
+from products 
+group by discontinued
+order by discontinued desc;
+
+/*result:
+10
+67 */
+
+
+--Write a query to get Product list (name, units on order , units in stock) of stock is less than the quantity on order. 
+
+select product_name
+, units_on_order  
+, units_in_stock 
+from products
+where units_in_stock < units_on_order;
+
+/*result:
+14 rows */
