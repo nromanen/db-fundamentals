@@ -15,7 +15,7 @@
 	
 	select employee_id, sum(freight) from orders group by employee_id order by employee_id;
 	
---5. Calculate the greatest, the smallest and the average age among the employees from London.
+--5. Calculate the greatest, the smallest and the average age among the employees from London. 
 	
 	select  floor(max(extract(year from age(birth_date)))) as max_age, floor(min(extract(year from age(birth_date)))) as min_age, floor(avg(extract(year from age(birth_date)))) as avg_age from employees where city='London';
 	
