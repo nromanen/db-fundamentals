@@ -1,0 +1,34 @@
+In the OrderDetails table, we have the fields UnitPrice and Quantity. Write the query which will return the OrderID, ProductsAmount (amount of products counted by ProductID in each order)  an additional column TotalPrice (containing the sum of values that multiply UnitPrice and Quantity). The result set will contain only data about orders with ProductsAmount of more than 5 and will be ordered by OrderID (ascending) and ProductID (descending).
+
+SELECT OrderID
+, COUNT(ProductID) AS ProductsAmount
+, SUM(UnitPrice*Quantity) AS TotalPrice
+FROM [Order Details]
+GROUP BY OrderID
+HAVING COUNT(ProductID) > 5
+ORDER BY 1, COUNT(ProductID) DESC
+
+Show a list of all the different values in the Customers table for ContactTitles. Also include an amount (count) for each ContactTitle with the alias ContactTitlesAmount. The result set would be ordered by ContactTitlesAmount in descending order.
+
+select ContactTitle 
+, count(ContactTitle) as ContactTitlesAmount 
+from Customers
+group by ContactTitle 
+order by count(ContactTitle) desc 
+
+Show the list of the calculated number of orders (AmountOfLateOrders), which were shipped (ShipDate) after the required date (RequiredDate) by employees, which would be represented in the result set with their EmployeeID. Include into the list only rows with the AmountOfLateOrders equals and more than 5.
+
+select EmployeeID  
+, count(OrderID) as AmountOfLateOrders
+from Orders
+where ShippedDate > RequiredDate
+group by EmployeeID 
+having (count(OrderID)) >= 5
+order by 1
+
+Show the FirstName and LastName columns from the Employees table, and then create a new column called FullName, showing FirstName and LastName joined together in one column, with a space in between for those employees, who live in the USA or Germany.
+select FirstName 
+, LastName 
+, FirstName || ' ' || LastName as FullName
+from Employees
+where Country = 'USA' or Country = 'Germany'
