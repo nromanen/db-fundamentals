@@ -1,0 +1,27 @@
+select order_id,
+	count(product_id) as products_amount,
+	sum(unit_price * quantity) as total_price
+from order_details
+group by order_id
+having count(product_id) > 5
+order by order_id asc, count(product_id) desc;
+
+select contact_title 
+, count(contact_title) as contact_title_amount 
+from customers
+group by contact_title 
+order by count(contact_title) desc
+
+select EmployeeID
+, count(OrderID) as AmountOfLateOrders
+from Orders
+where ShippedDate > RequiredDate
+group by EmployeeID 
+having (count(OrderID)) >= 5
+order by 1
+
+select FirstName 
+, LastName 
+, FirstName || ' ' || LastName as FullName
+from Employees
+where Country = 'USA' or Country = 'Germany'
