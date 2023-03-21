@@ -25,9 +25,15 @@ group by o.employee_id, e.first_name, e.last_name;
 
 
 --Calculate the greatest, the smallest and the average age among the employees from London.
-select (SELECT min(date_part('year', CURRENT_DATE) - date_part('year', birth_date)) from employees) as min_age
-, (SELECT max(date_part('year', CURRENT_DATE) - date_part('year', birth_date)) from employees) as max_age
-, (SELECT ROUND(avg(date_part('year', CURRENT_DATE) - date_part('year', birth_date))) from employees) as avg_age;
+select min(date_part('year', CURRENT_DATE) - date_part('year', birth_date)) as min_age
+, max(date_part('year', CURRENT_DATE) - date_part('year', birth_date)) as max_age
+, ROUND(avg(date_part('year', CURRENT_DATE) - date_part('year', birth_date))) as avg_age
+from employees
+where city = 'London';
+--select (SELECT min(date_part('year', CURRENT_DATE) - date_part('year', birth_date)) from employees) as min_age
+--, (SELECT max(date_part('year', CURRENT_DATE) - date_part('year', birth_date)) from employees) as max_age
+--, (SELECT ROUND(avg(date_part('year', CURRENT_DATE) - date_part('year', birth_date))) from employees) as avg_age;
+
 
 --Show the list of cities in which the average age of employees is greater than 60 (the average age is also to be shown)
 select city, avg(date_part('year', CURRENT_DATE) - date_part('year', birth_date)) as avg_age 
