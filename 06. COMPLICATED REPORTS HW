@@ -1,0 +1,6 @@
+select c.country 
+,sum(od.unit_price * (1 - od.discount) * od.quantity) 
+from orders o 
+join order_details od on o.order_id = od.order_id 
+join customers c on c.customer_id  = o.customer_id 
+group by c.country
