@@ -1,0 +1,37 @@
+--1.Show the list of first and last names and ages of the employees over 55. 
+--The result should be sorted by last name.
+--Note. You may use SQLite strftime() function to format a DateTime value based on a specified format. E.g.
+--for extracting YEAR value out from BirthDate column strftime('%Y',BirthDate) and strftime('%Y','now')
+--returns current year 
+
+SELECT FirstName, LastName, strftime('%Y', 'now') - strftime('%Y', BirthDate) as Age
+FROM Employees
+WHERE strftime('%Y', 'now') - strftime('%Y', BirthDate) > 55
+ORDER BY LastName;
+
+
+--2.Calculate the greatest, the smallest and the average age among the employees from London.
+select max(extract(year from age(now(), birth_date))) as max_age,
+		min(extract(year from age(now(), birth_date))) as min_age,
+		avg(extract(year from age(now(), birth_date))) as avg_age
+from employees
+where city like  'London';
+
+
+--3.Calculate the greatest, the smallest and the average age of the employees for each city.
+select city,
+max(extract(year from age(now(), birth_date))) as max_age,
+		min(extract(year from age(now(), birth_date))) as min_age,
+		avg(extract(year from age(now(), birth_date))) as avg_age
+from employees
+group by city;
+
+
+--4.Show the FirstName and LastName columns from the Employees table, and then create a new column called FullName, showing FirstName and LastName joined together in one column, 
+--with a space in between for those employees, who live in the USA or Germany.
+select 
+  first_name, last_name,
+concat(first_name || ' ' || last_name) as full_name
+from 
+  Employees
+ where country='USA' or country='Germany';
