@@ -16,3 +16,13 @@ join order_details od on p.product_id = od.product_id
 join orders o on od.order_id = o.order_id 
 where date_part('year', o.order_date) = '1997'
 group by c.category_name 
+
+
+
+select distinct on(p.product_name) p.product_name
+,p.unit_price as Unit_price
+,od.unit_price as Historical_price 
+,round(cast((p.unit_price/od.unit_price * 100 - 100) as numeric), 2)  || ' %' as Different
+from products p 
+left join order_details od on p.product_id = od.product_id 
+order by p.product_name
