@@ -72,7 +72,3 @@ group by discontinued;
 select product_name, unit_price, units_in_stock  from products
 where units_in_stock < units_on_order;
 
-
-
-
-
