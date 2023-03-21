@@ -1,0 +1,54 @@
+/*QUESTION 1
+In the OrderDetails table, we have the fields UnitPrice and Quantity. Write the query which will return the OrderID,
+ProductsAmount (amount of products counted by ProductID in each order)  
+an additional column TotalPrice (containing the sum of values that multiply UnitPrice and Quantity). 
+The result set will contain only data about orders with ProductsAmount of more than 5 and will be ordered by OrderID (ascending) and ProductsAmount (descending).*/
+
+SELECT OrderID, ProductID, SUM(Quantity) AS ProductsAmount, 
+       SUM(Quantity * UnitPrice) AS TotalPrice
+FROM OrderDetails
+GROUP BY OrderID, ProductID
+HAVING ProductsAmount > 5
+ORDER BY OrderID ASC, ProductsAmount DESC;
+
+/*QUESTION 2
+Show a list of all the different values in the Customers table for ContactTitles.
+Also include an amount (count) for each ContactTitle with the alias ContactTitlesAmount.
+The result set would be ordered by ContactTitlesAmount in descending order.*/
+
+SELECT ContactTitle, COUNT(*) AS ContactTitlesAmount
+FROM Customers
+GROUP BY ContactTitle
+ORDER BY ContactTitlesAmount DESC;
+
+/*QUESTION 3
+Show the list of the calculated number of orders (AmountOfLateOrders),
+which were shipped (ShipDate) after the required date (RequiredDate) by employees, 
+which would be represented in the result set with their EmployeeID. 
+Include into the list only rows with the AmountOfLateOrders equals and more than 5.*/
+
+
+SELECT 
+    o.EmployeeID,
+    COUNT(*) AS AmountOfLateOrders
+FROM 
+    Orders o
+WHERE 
+    o.ShippedDate > o.RequiredDate
+GROUP BY 
+    o.EmployeeID
+HAVING 
+    AmountOfLateOrders >= 5
+ORDER BY 
+    EmployeeID ASC;
+
+/*QUESTION 4
+Show the FirstName and LastName columns from the Employees table,
+and then create a new column called FullName, showing FirstName and LastName joined together in one column,
+with a space in between for those employees, who live in the USA or Germany.*/
+
+SELECT FirstName, LastName, 
+       CASE WHEN Country IN ('USA', 'Germany') THEN FirstName || ' ' || LastName
+            ELSE FirstName END AS FullName
+FROM Employees
+WHERE Country IN ('USA', 'Germany');
