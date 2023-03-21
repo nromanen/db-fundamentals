@@ -38,3 +38,4 @@ where
 		units_in_stock desc
 	limit 3
 )
+--Get count of unique ship_name for each ship country in orders  table
