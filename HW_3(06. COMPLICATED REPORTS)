@@ -1,0 +1,18 @@
+select c.country 
+,sum(od.unit_price * (1 - od.discount) * od.quantity) 
+from orders o 
+join order_details od on o.order_id = od.order_id 
+join customers c on c.customer_id  = o.customer_id 
+group by c.country
+
+
+
+
+select c.category_name
+, sum(od.unit_price * (1- od.discount) * od.quantity) as total_ording_sum 
+from categories c 
+join products p on p.category_id = c.category_id 
+join order_details od on p.product_id = od.product_id 
+join orders o on od.order_id = o.order_id 
+where date_part('year', o.order_date) = '1997'
+group by c.category_name 
