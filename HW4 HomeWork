@@ -1,0 +1,43 @@
+select p.product_name ,p.quantity_per_unit 
+from products p 
+
+select p.product_id ,p.product_name 
+from products p 
+
+
+select p.product_id ,p.product_name 
+from products p 
+where discontinued = '1';
+
+
+select p.product_name
+from products p 
+order by unit_price desc 
+limit 5;
+
+select p.product_id,p.product_name,p.unit_price 
+from products p 
+where p.unit_price < 20
+
+
+select p.product_id,p.product_name,p.unit_price 
+from products p 
+where unit_price  between 15 and 25
+
+select p.product_name,p.unit_price
+from products p 
+where  p.unit_price > (select avg(unit_price) from products)
+
+
+select p.product_name,p.unit_price
+from products p 
+order by p.unit_price desc
+limit 10 
+
+select count(p.unit_price),count(p.discontinued) 
+from products p 
+where p.unit_price >0 and p.discontinued>0
+
+select p.product_name ,p.units_on_order,p.units_in_stock
+from products p 
+where p.units_in_stock<p.units_on_order 
