@@ -1,1 +1,70 @@
+--Retrieve all first names from employees
+
+select first_name 
+from employees 
+
+--Retrieve all cities where orders were shipped
+
+select ship_city 
+from orders
+
+--Get all orders sorted by ship country 
+
+select concat(order_id , ' ' ,ship_country) as Orders
+from orders 
+order by ship_country 
+ 
+ --Get all orders sorted by supplier_id in descending order
+ 
+ select employee_id , ship_name 
+ from orders o 
+ order by employee_id desc
+ 
+ --Get products from category with max average price 
+ 
+ select category_id , avg(unit_price)
+ from products
+ group by category_id
+ having avg(unit_price) > (select avg(unit_price) from products ) 
+ order by avg(unit_price) desc 
+ limit 3
+ 
+ --Get three categories with the largest quantity of products in stock
+
+select category_id , count(product_id) as quantity
+from products 
+group by category_id 
+order by count(product_id)
+limit 3
+
+--Get count of unique ship_name for each_ship country in orders table
+
+select ship_country, count(distinct ship_name)  
+from orders
+group by ship_country;
+
+
+--Show all info about the employee with ID 8.
+
+select *
+from Employees
+where EmployeeID = 8
+
+--Show the list of first and last names of the employees from London.
+
+select FirstName, LastName
+from Employees
+where City LIKE 'London'
+
+--Show the list of first and last names of the employees whose first name begins with letter A.
+
+select FirstName, LastName
+from Employees
+where FirstName LIKE 'A%'
+
+--Write the query which will return the number of employees from London (alias AmountOfLondonEmployees). 
+
+select count(*) as AmountOfLondonEmployees
+from Employees
+where City LIKE 'London'
 
