@@ -19,9 +19,15 @@ where discontinued = 1;
 
 /*4. Write a query to get most expense and least expensive Product list (name and unit price).*/ 
 
-select max(unit_price)
-, min(unit_price)
-from products;
+(select product_name
+, unit_price
+from products
+order by unit_price desc limit 1)
+union
+(select product_name
+, unit_price
+from products
+order by unit_price limit 1);
 
 /*5. Write a query to get Product list (id, name, unit price) where current products cost less than $20.*/  
 
@@ -56,12 +62,11 @@ order by unit_price desc limit 10;
 
 /*9. Write a query to count current and discontinued products.*/ 
 
-select count(product_id) as "Current products"
+select count(product_id) as current_products
 , (select count(product_id)
 from products
-where discontinued = 1) as "Discontinued products"  
+where discontinued = 1) as discontinued_products  
 from products;
-
 
 /*10. Write a query to get Product list (name, units on order , units in stock) of stock is less than the quantity on order.*/  
 

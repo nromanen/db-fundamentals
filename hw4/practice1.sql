@@ -1,14 +1,14 @@
 /*1. Write a query to get most expense and least expensive Product list (name and unit price).*/
 
-select product_name
+(select product_name
 , unit_price  
 from products
-order by unit_price desc limit 1;
-
-select product_name
+order by unit_price desc limit 1)
+union
+(select product_name
 , unit_price 
 from products 
-order by unit_price asc limit 1;
+order by unit_price asc limit 1);
 
 /*2. Write a query to get Product list (name, unit price) of above average price.*/
 
@@ -30,4 +30,5 @@ order by unit_price desc limit 10;
 select employee_id
 , sum(freight) as totalFreight
 from orders
-group by employee_id;
+group by employee_id
+order by employee_id;
