@@ -1,0 +1,20 @@
+--Show the total ordering sum calculated for each country of customer
+
+select c.country,
+       round(sum(cast(od.unit_price * od.quantity as numeric)), 2)
+from customers c
+         inner join orders o on c.customer_id = o.customer_id
+         inner join order_details od on o.order_id = od.order_id
+group by c.country;
+
+/* result:
+21 rows
+
+Argentina,8119.1
+Spain,19431.89
+Switzerland,32919.5
+Italy,16705.15
+Venezuela,60814.89
+Belgium,35134.98
+Norway,5735.15
+…. */
