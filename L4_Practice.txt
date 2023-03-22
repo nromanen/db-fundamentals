@@ -1,0 +1,61 @@
+-----Write a query to get most expense and least expensive Product list (name and unit price).
+(SELECT product_name, unit_price
+FROM products
+ORDER BY unit_price desc
+LIMIT 1)
+union all
+(SELECT product_name, unit_price
+FROM products
+ORDER BY unit_price
+LIMIT 1);
+
+-----Write a query to get Product list (name, unit price) of above average price. 
+select product_name, unit_price
+from products
+where unit_price > (select avg(unit_price) from products)
+
+-----Write a query to get Product list (name, unit price) of ten most expensive products.
+SELECT product_name, unit_price
+FROM products
+ORDER BY unit_price desc
+LIMIT 10
+
+-----For each employee that served the order (identified by employee_id), calculate a total freight.
+SELECT e.employee_id, sum(freight)
+FROM employees e
+join orders
+on e.employee_id = orders.employee_id
+group by e.employee_id
+
+-----Calculate the greatest, the smallest and the average age among the employees from London.
+select city, max(extract(year from age(current_date, birth_date))), min(extract(year from age(current_date, birth_date))), avg(extract(year from age(current_date, birth_date)))
+from employees
+where city = 'London'
+group by city
+
+
+-----Calculate the greatest, the smallest and the average age of the employees for each city.
+select city, max(extract(year from age(current_date, birth_date))), min(extract(year from age(current_date, birth_date))), avg(extract(year from age(current_date, birth_date)))
+from employees
+group by city
+
+-----Show the list of cities in which the average age of employees is greater than 60 (the average age is also to be shown)
+select city, avg(extract(year from age(current_date, birth_date)))
+from employees
+group by city
+having avg(extract(year from age(current_date, birth_date))) > 60 
+
+-----Show the first and last name(s) of the eldest employee(s).
+select first_name, last_name
+from employees
+where (extract(year from age(current_date, birth_date))) = (select max(extract(year from age(current_date, birth_date)))
+                                                            from employees)
+
+-----Show first, last names and ages of 3 eldest employees.
+select first_name, last_name, extract(year from age(current_date, birth_date)) as age
+from employees
+order by age desc
+limit 3
+
+
+
