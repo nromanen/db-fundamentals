@@ -85,8 +85,8 @@ and customers are from and where orders have been made to. Duplicates should be 
 
 select distinct city from
 (select e.city from employees e
-    union
+union
 select c.city from customers c
-    union
-select o.ship_city from orders o) as cities
+union
+SELECT c.city FROM orders o JOIN customers c ON o.customer_id = c.customer_id) as cities
 order by city asc;
