@@ -1,0 +1,60 @@
+--Show first and last names of the employees as well as the count of orders each of them have received during the year 1997.
+
+select concat_ws(' ', first_name, last_name) as employee_name,
+       count(order_id)
+from employees inner join orders
+on employees.employee_id = orders.employee_id
+where extract(year from order_date) = 1997
+group by orders.employee_id, employee_name;
+
+/* result: 
+9 rows:
+
+Nancy Davolio,55
+Andrew Fuller,41
+Janet Leverling,71
+Margaret Peacock,81
+Steven Buchanan,18
+Michael Suyama,33
+Robert King,36
+Laura Callahan,54
+Anne Dodsworth,19
+
+--Show first and last names of the employees as well as the count of their orders shipped after required date during the year 1997. 
+
+select concat_ws(' ', first_name, last_name) as employee_name,
+       count(order_id) as late_orders_in_1997
+from employees inner join orders on employees.employee_id = orders.employee_id
+where (extract(year from order_date) = 1997)
+and (shipped_date - orders.required_date > 0)
+group by orders.employee_id, employee_name;
+
+/* result:
+
+Nancy Davolio,1
+Andrew Fuller,3
+Janet Leverling,2
+Margaret Peacock,6
+Michael Suyama,1
+Robert King,4
+Laura Callahan,3
+Anne Dodsworth,2 
+*/
+
+--Create a report showing the information about employees and orders, whenever they had orders or not
+
+
+select first_name,
+       last_name,
+       order_id
+from employees left join orders
+on employees.employee_id = orders.employee_id
+order by order_id;
+
+/* result: 
+
+Steven,Buchanan,10248
+Michael,Suyama,10249
+Margaret,Peacock,10250
+…
+*/
