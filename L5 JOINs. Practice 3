@@ -1,0 +1,63 @@
+--Show the list of French customers’ names who used to order non-French products 
+
+select distinct customers.company_name as french_customer
+from customers
+inner join orders on customers.customer_id = orders.customer_id
+inner join order_details on orders.order_id = order_details.order_id
+inner join products on order_details.product_id = products.product_id
+inner join suppliers on products.supplier_id = suppliers.supplier_id
+where suppliers.country not like 'France' and customers.country like 'France'
+;
+
+/* result: 10 rows
+
+La corne d'abondance
+Folies gourmandes
+Bon app'
+Vins et alcools Chevalier
+Blondesddsl père et fils
+France restauration
+Victuailles en stock
+Du monde entier */
+
+--Show the list of suppliers, products and its category
+
+select suppliers.company_name as supplier,
+products.product_name,
+categories.category_name
+from suppliers
+inner join products on suppliers.supplier_id = products.supplier_id
+inner join categories on products.category_id = categories.category_id;
+
+/* result:
+
+Specialty Biscuits, Ltd.,Chai,Beverages
+Exotic Liquids,Chang,Beverages
+Exotic Liquids,Aniseed Syrup,Condiments */
+
+--Create a report that shows all  information about suppliers and products
+
+select s.supplier_id,
+       s.company_name,
+       s.contact_name,
+       s.contact_title,
+       s.address,
+       s.region,
+       s.region,
+       s.postal_code,
+       s.country,
+       s.phone,
+       s.fax,
+       s.homepage,
+       p.product_id,
+       p.product_name,
+       p.category_id,
+       p.quantity_per_unit,
+       p.unit_price,
+       p.units_in_stock,
+       p.units_on_order,
+       p.reorder_level,
+       p.discontinued
+    from suppliers s
+inner join products p on s.supplier_id = p.supplier_id
+order by p.product_name;
