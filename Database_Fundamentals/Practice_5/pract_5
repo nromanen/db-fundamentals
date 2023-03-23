@@ -1,0 +1,62 @@
+	--PRACTICE 5
+
+--1.Create a report showing the first and last name of all sales representatives who are from Seattle or Redmond.
+
+	select first_name, last_name, city 
+	from employees 
+	where city 
+	IN ('Seattle', 'Redmond');
+
+--2. Create a report that shows the company name, contact title, city and country of all  customers in Mexico or in any city in Spain except Madrid.
+
+	select company_name, contact_title, city, country 
+	from customers 
+	where country 
+	in ('Mexico', 'Spain') and city not in ('Madrid');
+
+--3. Show first and last names of the employees as well as the count of orders each of them have received during the year 1997.    
+
+	select e.first_name, e.last_name 
+	from employees e 
+	inner join orders o on e.employee_id=o.employee_id 
+	where '1997' = extract('Year' from o.required_date);
+
+--4. Show first and last names of the employees as well as the count of their orders shipped after required date during the year 1997.    
+
+	select e.first_name, e.last_name, o.required_date, o.shipped_date 
+	from employees e 
+	inner join orders o on e.employee_id=o.employee_id 
+	where '1997' = extract('Year' from o.required_date) 
+	and o.required_date < o.shipped_date;
+
+--5. Create a report showing the information about employees and orders, whenever they had orders or not.    
+
+	select * from orders o 
+	inner join employees e on o.employee_id=e.employee_id 
+	order by e.employee_id;
+
+
+--6. Show the list of French customers’ names who used to order non-French products.
+
+	select c.company_name 
+	from suppliers s 
+	inner join products p on p.supplier_id=s.supplier_id 
+	inner join order_details od on p.product_id=od.product_id 
+	inner join orders o on od.order_id=o.order_id 
+	inner join customers c on o.customer_id=c.customer_id
+	where s.country not in ('France') and c.country in ('France') group by c.company_name;
+
+--7. Show the list of suppliers, products and its category.
+
+	select * 
+	from suppliers s 
+	inner join products p on p.supplier_id=s.supplier_id 
+	inner join categories c on c.category_id=p.category_id 
+	order by s.supplier_id;
+
+--8. Create a report that shows all  information about suppliers and products.   
+	
+	select * 
+	from suppliers s 
+	inner join products p on p.supplier_id=s.supplier_id 
+	order by s.supplier_id;

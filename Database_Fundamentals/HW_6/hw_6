@@ -1,0 +1,26 @@
+			--HOME_TASK_6
+
+
+--1. Show the total ordering sum calculated for each country of customer.
+
+	select c.country, sum(od.unit_price)
+	from orders o inner join order_details od on o.order_id=od.order_id
+	inner join customers c on o.customer_id=c.customer_id
+	group by c.country
+	order by c.country;
+
+--2. Show the list of product categories along with total ordering sums calculated for the orders made for the products of each category, during the year 1997.
+
+	select cat.category_id, cat.category_name, sum(p.unit_price) from categories cat 
+	inner join products p on p.category_id=cat.category_id 
+	inner join order_details od on od.product_id=p.product_id 
+	inner join orders o on o.order_id=od.order_id and extract('Year' from o.order_date)='1997'
+	group by cat.category_id
+	order by cat.category_id;
+
+--3. Show the list of product names along with unit prices and the history of unit prices taken from the orders (show ‘Product name – Unit price – Historical price’). The duplicate records should be eliminated. If no orders were made for a certain product, then the result for this product should look like ‘Product name – Unit price – NULL’. Sort the list by the product name.
+
+	select p.product_name, p.unit_price, o.order_date 
+	from products p inner join order_details od on p.product_id=od.product_id
+	inner join orders o on o.order_id=od.order_id
+	order by o.order_date;
