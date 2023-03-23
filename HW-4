@@ -97,3 +97,50 @@ having sum(abs(p.unit_price-od.unit_price)) = (select
 	group by p.product_name
 	order by sum(abs(p.unit_price-od.unit_price )) desc
 	limit 1);
+	
+/*In the OrderDetails table, we have the fields UnitPrice and Quantity. Write the query which will return 
+ * the OrderID, ProductsAmount (amount of products counted by ProductID in each order)  an additional 
+ * column TotalPrice (containing the sum of values that multiply UnitPrice and Quantity). 
+ * The result set will contain only data about orders with ProductsAmount of more than 5 
+ * and will be ordered by OrderID (ascending) and ProductsAmount (descending).*/
+select 
+	order_id,
+	count(product_id) as product_amount,
+	sum(unit_price*quantity) as total_price
+from order_details 
+group by order_id
+having count(product_id)>5
+order by order_id, sum(unit_price*quantity) desc;
+
+/*Show a list of all the different values in the Customers table for ContactTitles. Also include an amount (count) 
+ * for each ContactTitle with the alias ContactTitlesAmount. The result set would be ordered by ContactTitlesAmount 
+ * in descending order.*/
+select 
+	contact_title, 
+	count(customer_id) as contact_title_amount
+from customers 
+group by contact_title 
+order by count(customer_id) desc;
+
+/*Show the list of the calculated number of orders (AmountOfLateOrders), which were shipped (ShipDate) 
+ * after the required date (RequiredDate) by employees, which would be represented in the result set 
+ * with their EmployeeID. Include into the list only rows with the AmountOfLateOrders equals and more than 5.*/
+select 
+	employee_id,
+	count(order_id) as amount_of_late_orders
+from
+	orders 
+where shipped_date > required_date 	
+group by employee_id 
+having count(order_id) >=5
+order by employee_id;
+
+/*Show the FirstName and LastName columns from the Employees table, and then create a new column called FullName, 
+ showing FirstName and LastName joined together in one column, with a space in between for those employees, 
+ who live in the USA or Germany.*/
+select 
+	first_name,
+	last_name,
+	first_name ||' '||last_name as full_name
+from employees 
+where country in ('USA', 'Germany');
