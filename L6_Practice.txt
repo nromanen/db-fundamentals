@@ -1,0 +1,61 @@
+-----Show the list of French customers’ names who are working in the same cities.
+SELECT DISTINCT c1.company_name, c1.city 
+FROM customers c1
+INNER JOIN customers c2 ON c1.city = c2.city
+WHERE c1.country = 'France' AND c2.country = 'France' 
+AND c1.customer_id <> c2.customer_id
+ORDER BY c1.city;
+
+-----Show the list of German suppliers’ names who are not working in the same cities.
+SELECT DISTINCT c1.company_name, c1.city 
+FROM customers c1
+INNER JOIN customers c2 ON c1.city != c2.city
+WHERE c1.country = 'Germany' AND c2.country = 'Germany'
+AND c1.customer_id <> c2.customer_id
+ORDER BY c1.city;
+
+-----Show the count of orders made by each customer from France.
+SELECT c.customer_id, count(order_id)
+from orders
+join customers c on orders.customer_id = c.customer_id
+where country = 'France'
+group by c.customer_id
+
+-----Show the list of French customers’ names who have made more than one order
+SELECT c.customer_id
+from orders
+join customers c on orders.customer_id = c.customer_id
+where country = 'France'
+group by c.customer_id
+having count(order_id) > 1
+
+-----Show the list of customers’ names who used to order the ‘Tofu’ product.
+select company_name
+from customers
+join orders on customers.customer_id = orders.customer_id
+join order_details od on orders.order_id = od.order_id
+join products p on od.product_id = p.product_id
+where product_name = 'Tofu'
+group by company_name
+
+
+-----Show the list of French customers’ names who used to order non-French products.
+select c.company_name
+from customers c
+join orders on c.customer_id = orders.customer_id
+join order_details od on orders.order_id = od.order_id
+join products p on od.product_id = p.product_id
+join suppliers s on p.supplier_id = s.supplier_id
+where c.country = 'France' and s.country != 'France'
+group by c.company_name
+
+
+-----Show the list of French customers’ names who used to order French products.
+select c.company_name
+from customers c
+join orders on c.customer_id = orders.customer_id
+join order_details od on orders.order_id = od.order_id
+join products p on od.product_id = p.product_id
+join suppliers s on p.supplier_id = s.supplier_id
+where c.country = 'France' and s.country = 'France'
+group by c.company_name

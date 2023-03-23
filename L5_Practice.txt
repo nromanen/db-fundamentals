@@ -1,0 +1,53 @@
+-----Create a report showing the first and last name of all sales representatives who are from  Seattle or Redmond.    
+select first_name, last_name from employees
+where city = 'Redmond' or city = 'Seattle'
+
+-----Create a report that shows the company name, contact title, city and country of all  customers in Mexico or in any city in Spain except Madrid.  
+select company_name, contact_title, city, country
+from customers
+where country = 'Mexico' or (country = 'Spain' and city != 'Madrid')
+
+-----Show first and last names of the employees as well as the count of orders each of them have received during the year 1997.    
+select first_name, last_name, count(order_id)
+from employees join orders on employees.employee_id = orders.employee_id
+where extract(year from order_date) = 1997
+group by first_name, last_name
+
+-----Show first and last names of the employees as well as the count of their orders shipped after required date during the year 1997.    
+select first_name, last_name, count(order_id)
+from employees
+         join orders on employees.employee_id = orders.employee_id
+where extract(year from order_date) = 1997 and shipped_date > orders.required_date
+group by first_name, last_name
+
+-----Create a report showing the information about employees and orders, whenever they had orders or not.    
+select first_name, last_name, order_id
+from employees
+left join orders o on employees.employee_id = o.employee_id
+
+-----Show the list of French customers’ names who used to order non-French products.
+select distinct customers.company_name
+from customers
+         join orders on customers.customer_id = orders.customer_id
+         join order_details od on orders.order_id = od.order_id
+         join products p on od.product_id = p.product_id
+         join suppliers s on p.supplier_id = s.supplier_id
+where customers.country = 'France'
+  and s.country != 'France'
+
+-----Show the list of suppliers, products and its category.
+select distinct company_name, product_name, category_name
+from suppliers
+         join products on suppliers.supplier_id = products.supplier_id
+         join categories c on products.category_id = c.category_id
+order by company_name
+
+
+-----Create a report that shows all  information about suppliers and products.   
+select *
+from suppliers
+         join products on suppliers.supplier_id = products.supplier_id
+order by products.supplier_id
+
+
+
