@@ -1,29 +1,19 @@
 --Show the total ordering sum calculated for each country of customer
 
 select c.country as customer_country,
-       round(sum(cast(od.unit_price * od.quantity as numeric)), 2) as total_ordering_sum
+       round(sum(cast((od.unit_price - (od.unit_price * od.discount)) * od.quantity as numeric)), 2)
+                 as total_ordering_sum
 from customers c
          inner join orders o on c.customer_id = o.customer_id
          inner join order_details od on o.order_id = od.order_id
 group by c.country;
 
 
-/* result:
-21 rows
-
-Argentina,8119.1
-Spain,19431.89
-Switzerland,32919.5
-Italy,16705.15
-Venezuela,60814.89
-Belgium,35134.98
-Norway,5735.15
-…. */
-
 —-Show the list of product categories along with total ordering sums calculated for the orders made for the products of each category, during the year 1997
 
 select distinct c.category_name,
-                round(sum(cast(od.unit_price * od.quantity as numeric)), 2) as total_ordering_sum
+                round(sum(cast((od.unit_price - (od.unit_price * od.discount)) * od.quantity as numeric)), 2)
+                    as total_ordering_sum
 from categories c
          inner join products p on c.category_id = p.category_id
          inner join order_details od on p.product_id = od.product_id
@@ -31,32 +21,14 @@ from categories c
 where extract(year from o.order_date) = 1997
 group by c.category_name;
 
-/* result:
-8 rows
 
-Beverages,110424
-Condiments,59679
-Confections,87227.77
-Dairy Products,123910.8
-Grains/Cereals,60486.95
-Meat/Poultry,87621.03
-Produce,57718.55
-Seafood,71320.65 */
 
 --Show the list of product names along with unit prices and the history of unit prices taken from the orders (show ‘Product name – Unit price – Historical price’). The duplicate records should be eliminated. If no orders were made for a certain product, then the result for this product should look like ‘Product name – Unit price – NULL’. Sort the list by the product name.
 
 select distinct p.product_name,
-                p.product_id,
-                p.unit_price  as unit_price,
+                p.unit_price,
                 coalesce(od.unit_price, NULL) as historical_price
 from products p
          left join order_details od on p.product_id = od.product_id
-order by p.product_name
-;
- 
-/* result: 
-156 rows 
+order by p.product_name;
 
-Alice Mutton,17,39,31.2
-Alice Mutton,17,39,39
-Aniseed Syrup,3,10,8 */
