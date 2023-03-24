@@ -1,0 +1,88 @@
+--Show the list of french customers’ names who used to order non-french products (use left join).
+select distinct 
+	c.contact_name  
+from customers c 
+left join orders o 
+on c.customer_id = o.customer_id 
+join order_details od 
+on o.order_id = od.order_id 
+join products p 
+on od.product_id = p.product_id 
+join suppliers s 
+on p.supplier_id = s.supplier_id 
+where c.country like 'France' and s.country not like 'France';
+
+--Show the list of french customers’ names who used to order french products.
+select distinct 
+	c.contact_name  
+from customers c 
+left join orders o 
+on c.customer_id = o.customer_id 
+join order_details od 
+on o.order_id = od.order_id 
+join products p 
+on od.product_id = p.product_id 
+join suppliers s 
+on p.supplier_id = s.supplier_id 
+where c.country like 'France' and s.country like 'France';
+
+--Show the total ordering sum calculated for each country where orders were shipped.
+select 
+	o.ship_country,
+	sum(od.unit_price*od.quantity)::numeric(10,2)  as sum
+from orders o 
+join order_details od 
+on o.order_id = od.order_id 
+group by o.ship_country
+order by o.ship_country; 
+
+--Show the list of product categories along with total ordering sums calculated for the orders made for the products of each category, during the year 1997.
+select 
+	c.category_name,
+	sum((od.unit_price*od.quantity)*(1-od.discount))::numeric(10,2)  as sum
+from categories c 
+join products p 
+on p.category_id = c.category_id 
+join order_details od 
+on od.product_id = p.product_id 
+join orders o 
+on o.order_id = od.order_id and extract(year from o.shipped_date) = 1997
+group by c.category_name  
+order by c.category_name; 
+
+--Show the list of employees’ names along with names of their chiefs (use left join with the same table).
+select
+	e.last_name,
+	e.first_name,
+	e2.last_name,
+	e2.first_name 
+from employees e 
+left join employees e2 
+on e.reports_to = e2.employee_id; 
+
+/*Show the list of product names along with unit prices and the history of unit prices taken from the orders 
+ * (show ‘Product name – Unit price – Historical price’). The duplicate records should be eliminated. 
+ * If no orders were made for a certain product, then the result for this product should look like 
+ * ‘Product name – Unit price – NULL’. Sort the list by the product name.*/
+select distinct 
+	p.product_name,
+	p.unit_price::numeric(10,2),
+	od.unit_price::numeric(10,2) as historical_price
+from products p 
+left join order_details od 
+on p.product_id = od.product_id 
+order by p.product_name, historical_price; 
+
+--Show the list of cities where employees and customers are from and where orders have been made to. Duplicates should be eliminated.
+select 
+	e.city as city
+from employees e 
+left join orders o 
+on e.city = o.ship_city 
+union
+select
+	c.city 
+from customers c  
+left join orders o 
+on c.city = o.ship_city 
+order by city; 
