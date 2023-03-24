@@ -1,0 +1,31 @@
+1.Given the Northwind database (see the structure below).
+
+Show all info about the employee with ID 8.
+
+select *
+from employees e 
+where e.employee_id =8;
+
+2.Given the Northwind database (see the structure below).
+
+Show the list of first and last names of the employees from London.
+
+select e.first_name ,e.last_name
+from employees e 
+where e.city = 'London';
+
+3.Given the Northwind database (see the structure below).
+
+Show the list of first and last names of the employees whose first name begins with letter A.
+
+select e.first_name ,e.last_name 
+from employees e 
+where e.first_name like 'A%';
+
+4.Write the query which will return the number of employees from London (alias AmountOfLondonEmployees). 
+
+select count(e.city) as AmountOfLondonEmployees
+
+from employees e 
+where e.city = 'London'
+
