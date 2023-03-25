@@ -48,3 +48,58 @@ SELECT FirstName , LastName , FirstName || ' ' || LastName as FullName
 FROM Employees
 WHERE Country = 'USA' OR Country = 'Germany';
 
+--Write a query to get Product name and quantity/unit. 
+
+select product_name, quantity_per_unit
+from products p ;
+
+--Write a query to get current Product list (Product ID and name). 
+
+select product_id, product_name
+from products p ;
+
+--Write a query to get discontinued Product list (Product ID and name). 
+
+select product_id, product_name
+from products p 
+where discontinued = 0;
+
+--Write a query to get most expense and least expensive Product list (name and unit price). 
+
+select product_name, unit_price
+from products
+where unit_price = (select MAX(unit_price) from products)
+or unit_price = (select MIN(unit_price) from products);
+
+--Write a query to get products list (product_id, product_name, unit_price) where current products cost less than $20. 
+select product_id , product_name , unit_price 
+from products p 
+where unit_price < 20;
+
+--Write a query to get Product list (id, name, unit price) where products cost between $15 and $25. 
+
+select product_id , product_name , unit_price 
+from products p 
+where p.unit_price > 15 and p.unit_price < 25;
+
+--Write a query to get Product list (name, unit price) of above average price. 
+
+select product_name , unit_price 
+from products p 
+where unit_price > (select avg(unit_price) from products);
+
+--Write a query to get Product list (name, unit price) of ten most expensive products. 
+
+select product_name, unit_price
+from products
+order by unit_price desc
+limit 10;
+
+--Write a query to count current and discontinued products. 
+
+select
+count(case when discontinued = 0 then product_id end) as current_products,
+count(case when discontinued = 1 then product_id end) as discontinued_products
+from products;
+
+
