@@ -1,0 +1,80 @@
+1.Given the Northwind database (see the structure below).
+Show the list of french customers’ names who used to order non-french products (use left join).
+
+SELECT DISTINCT  c.ContactName 
+FROM Customers c 
+LEFT JOIN Orders o ON c.CustomerId = o.CustomerId 
+JOIN "Order Details" od ON o.OrderId = od.OrderId 
+JOIN products p ON od.ProductId = p.ProductId 
+JOIN suppliers s ON p.SupplierId  = s.SupplierId 
+WHERE c.Country LIKE 'Fr%' AND s.Country <> c.Country
+
+2.Given the Northwind database (see the structure below).
+Show the list of french customers’ names who used to order french products.
+
+select distinct c.ContactName 
+from Customers c 
+join Orders o ON c.CustomerId = o.CustomerId 
+join 'Order Details' od on o.OrderId = od.OrderId 
+join products p on od.ProductId = p.ProductId 
+join suppliers s on p.SupplierId  = s.SupplierId 
+where c.Country like 'France' and s.Country = c.Country
+order by c.CustomerID
+
+3.Show the total ordering sum calculated for each country where orders were shipped.
+
+While calculating the sum take into account the value of the discount (Discount).
+
+SELECT o.ShipCountry
+, round(SUM(od.UnitPrice * od.Quantity - od.UnitPrice * od.Quantity * od.Discount), 2) AS Sum 
+FROM Orders o 
+INNER JOIN "Order Details" od ON o.OrderID = od.OrderID
+GROUP BY o.ShipCountry;
+
+
+4.Show the list of product categories along with total ordering sums (considering Discount) calculated for the orders made for the products of each category, during the year 1997.
+SELECT 
+    c.CategoryName,
+    ROUND(SUM(od.UnitPrice * od.Quantity *(1-od.Discount)), 2) AS Sum
+FROM Categories c
+LEFT JOIN Products p ON p.CategoryID = c.CategoryID
+LEFT JOIN 'Order Details' od ON od.ProductID = p.ProductID
+JOIN Orders o ON o.OrderID = od.OrderID AND strftime('%Y', o.ShippedDate) = '1997'
+GROUP BY c.CategoryName
+ORDER BY c.CategoryName;
+5. Given the Northwind database (see the structure below).
+
+Show the list of product names along with unit prices and the history of unit prices taken from the orders (show ‘Product name – Unit price – Historical price’). The duplicate records should be eliminated. If no orders were made for a certain product, then the result for this product should look like ‘Product name – Unit price – NULL’. Sort the list by the product name.
+
+SELECT DISTINCT 
+    p.ProductName, 
+    p.UnitPrice AS 'UnitPrice',
+    od.UnitPrice AS 'HistoricalPrice'
+FROM Products p 
+LEFT JOIN 'Order Details' od 
+    ON p.ProductID = od.ProductID 
+ORDER BY p.ProductName, 'HistoricalPrice';
+
+6.Show the list of employees’ names along with names of their chiefs (use left join with the same table).
+SELECT 
+    e.LastName, 
+    e.FirstName, 
+    e2.LastName AS ChiefLastName, 
+    e2.FirstName AS ChiefFirstName 
+FROM Employees e 
+LEFT JOIN Employees e2 
+    ON e.ReportsTo = e2.EmployeeID;
+
+7.Show the list of cities where employees and customers are from. Duplicates should be eliminated.
+
+SELECT city
+FROM (
+    SELECT e.City
+    FROM Employees e
+    LEFT JOIN Orders o ON e.City = o.ShipCity
+    UNION
+    SELECT c.City
+    FROM Customers c
+    LEFT JOIN Orders o ON c.City = o.ShipCity
+) AS City
+ORDER BY City;
