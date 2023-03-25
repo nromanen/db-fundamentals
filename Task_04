@@ -25,8 +25,8 @@ WHERE Country = 'USA' or Country = 'Germany'
 
 //In the OrderDetails table, we have the fields UnitPrice and Quantity. Write the query which will return the OrderID, ProductsAmount (amount of products counted by ProductID in each order)  an additional column TotalPrice (containing the sum of values that multiply UnitPrice and Quantity). The result set will contain only data about orders with ProductsAmount of more than 5 and will be ordered by OrderID (ascending) and ProductsAmount (descending).
 SELECT OrderID
-, COUNT(ProductID) AS ProductsAmount
-, SUM(UnitPrice*Quantity) AS TotalPrice
+,COUNT(ProductID) AS ProductsAmount
+,SUM(UnitPrice*Quantity) AS TotalPrice
 FROM [Order Details]
 GROUP BY OrderID
 HAVING COUNT(ProductID) > 5
