@@ -1,0 +1,39 @@
+QUESTION 1
+Show the list of french customers’ names who used to order non-french products (use left join).
+
+SELECT DISTINCT c.ContactName AS ContactName
+FROM Customers c
+LEFT JOIN Orders o ON c.CustomerID = o.CustomerID
+LEFT JOIN [Order Details] od ON o.OrderID = od.OrderID
+LEFT JOIN Products p ON od.ProductID = p.ProductID
+LEFT JOIN Categories cat ON p.CategoryID = cat.CategoryID
+WHERE c.Country = 'France' AND cat.CategoryName <> 'French'
+
+QUESTION 2
+Show the list of french customers’ names who used to order french products.
+
+SELECT DISTINCT c.ContactName  
+FROM Customers c
+INNER JOIN Orders o ON c.CustomerID = o.CustomerID
+INNER JOIN "Order Details" od ON o.OrderID = od.OrderID 
+INNER JOIN Products p ON od.ProductID = p.ProductID
+INNER JOIN Suppliers s ON p.SupplierID = s.SupplierID 
+WHERE c.Country LIKE 'Fr%' AND c.Country = s.Country
+ORDER BY c.CustomerID;
+
+QUESTION 3
+Show the total ordering sum calculated for each country where orders were shipped.
+While calculating the sum take into account the value of the discount (Discount).
+
+SELECT o.ShipCountry, ROUND(SUM((od.UnitPrice * od.Quantity) * (1 - od.Discount)), 2) AS Sum
+FROM Orders o
+JOIN [Order Details] od ON o.OrderID = od.OrderID
+GROUP BY o.ShipCountry
+
+QUESTION 4
+
+QUESTION 5
+
+QUESTION 6
+
+QUESTION 7
