@@ -1,0 +1,117 @@
+--Show first and last names of the employees who have the biggest freight.
+
+select e.first_name , e.last_name
+from employees e
+join orders o on o.employee_id = e.employee_id
+where o.freight = (
+	select max(freight)
+	from orders
+);
+
+
+--Show first, last names of the employees, their freight who have the freight bigger then avarage.
+
+select e.first_name , e.last_name, avg(o.freight)
+from employees e
+join orders o on o.employee_id = e.employee_id
+group by e.first_name, e.last_name
+having avg(o.freight) > (
+	select avg(freight)
+	from orders
+);
+
+
+--Show the names of products, that have the biggest price.
+
+select p.product_name, p.unit_price
+from products p
+where p.unit_price = (
+	select max(p2.unit_price)
+	from products p2
+)
+
+
+--Show the name of customers with the freight bigger then avarage.
+
+select c.company_name, avg(freight)
+from customers c
+join orders o on o.customer_id = c.customer_id
+group by c.company_name
+having avg(o.freight) > (
+	select avg(freight)
+	from orders
+)
+
+
+--Show the name of supplier  who delivered the cheapest product.
+
+select s.company_name, p.product_name, p.unit_price
+from suppliers s
+join products p on p.supplier_id  = s.supplier_id
+where p.unit_price = (
+	select min(unit_price)
+	from products
+)
+
+
+--Show the name of the category in which the average price of  a certain product is greater than the grand average in the whole stock.
+
+select c.category_name, avg(p.unit_price)
+from categories c
+left join products p on c.category_id = p.category_id
+group by c.category_name
+having  avg(p.unit_price) > (
+	select avg(unit_price)
+	from products
+)
+
+
+--Show the name of the supplier whose delivery  is lower than the grand average in the whole stock.
+
+select s.company_name, avg(p.unit_price)
+from suppliers s
+join products p on p.supplier_id = s.supplier_id
+group by s.supplier_id, s.company_name
+having avg(p.unit_price) < (
+    select avg(unit_price)
+    from products
+)
+
+
+--Show the regions where employees work, the middle age of which is higher than over the whole company.
+
+select r.region_description, avg(age(now(), e.birth_date))
+from employees e
+join employee_territories et on et.employee_id = e.employee_id
+join territories t on et.territory_id = t.territory_id
+join region r on r.region_id = t.region_id
+group by r.region_description
+having avg(age(now(), e.birth_date)) >	 (
+	select avg(age(now(), birth_date))
+	from employees
+)
+
+
+--Show customers whose maximum freight level is less than the average for all customers.
+
+select c.company_name, max(o.freight)
+from customers c
+join orders o on o.customer_id = c.customer_id
+group by c.company_name
+having max(o.freight) < (
+	select avg(freight)
+	from orders
+)
+
+
+--Show the categories of products for which the average discount is higher than the average discount for all products
+
+select c.category_name, avg(od.discount) as avg_discount
+from products p
+join order_details od on od.product_id = p.product_id
+join categories c on c.category_id = p.category_id
+group by c.category_name
+having avg (od.discount) > (
+    select avg(discount)
+    from order_details
+)
