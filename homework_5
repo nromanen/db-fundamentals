@@ -1,0 +1,55 @@
+/*QUESTION 1
+Show first and last names of the employees who used to serve orders shipped to Madrid. The result set would be ordered by first name.*/
+
+SELECT DISTINCT e.FirstName, e.LastName 
+FROM Employees AS e
+INNER JOIN Orders AS o ON e.EmployeeID = o.EmployeeID
+INNER JOIN Shippers AS s ON o.ShipVia = s.ShipperID
+INNER JOIN Customers AS c ON o.CustomerID = c.CustomerID
+WHERE c.City = 'Madrid'
+ORDER BY e.FirstName ASC;
+
+/*QUESTION 2
+Write the query, which will show the first and last names of the employees (whether they served orders or not)
+as well as the count of orders (CountOfOrders) where served by each of them. 
+Note. Use LEFT JOIN*/
+
+SELECT e.FirstName, e.LastName, COUNT(o.EmployeeID) AS CountOfOrders
+FROM Employees AS e
+LEFT JOIN Orders AS o ON e.EmployeeID = o.EmployeeID
+GROUP BY e.EmployeeID, e.FirstName, e.LastName
+ORDER BY e.FirstName ASC;
+
+/*QUESTION 3
+Show first and last names of the employees as well as the count of their orders shipped after required date during the year 1997 (use left join).*/
+
+SELECT e.FirstName
+, e.LastName
+, COUNT(o.OrderID) AS CountOfOrder
+FROM Employees e 
+LEFT JOIN Orders o ON e.EmployeeID = o.EmployeeID
+AND strftime('%Y', o.OrderDate) = '1997' AND o.ShippedDate > o.RequiredDate
+GROUP BY e.EmployeeID, e.FirstName, e.LastName
+ORDER BY e.FirstName;
+
+/*QUESTION 4
+Show category names (without duplicates) of products that where ordered by customers that are located  in Madrid.*/
+
+SELECT DISTINCT c.CategoryName AS Name
+FROM Categories c
+JOIN Products p ON c.CategoryID = p.CategoryID
+JOIN OrderDetails od ON p.ProductID = od.ProductID
+JOIN Orders o ON od.OrderID = o.OrderID
+WHERE o.ShipCity = 'Madrid'
+ORDER BY Name;
+
+
+/*QUESTION 5
+Show the list of french customers’ names who have made more than one order (use grouping).*/
+
+SELECT Customers.ContactName, COUNT(*) as CountOfOrder
+FROM Customers
+JOIN Orders ON Customers.CustomerID = Orders.CustomerID
+WHERE Customers.Country = 'France'
+GROUP BY Customers.ContactName
+HAVING COUNT(*) > 1;
