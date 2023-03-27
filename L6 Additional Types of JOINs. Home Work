@@ -11,7 +11,7 @@ group by c.country;
 
 —-Show the list of product categories along with total ordering sums calculated for the orders made for the products of each category, during the year 1997
 
-select distinct c.category_name,
+select c.category_name,
                 round(sum(cast((od.unit_price - (od.unit_price * od.discount)) * od.quantity as numeric)), 2)
                     as total_ordering_sum
 from categories c
