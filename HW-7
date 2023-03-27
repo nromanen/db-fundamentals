@@ -1,0 +1,252 @@
+--Show the list of customers’ names who used to order the ‘Tofu’ product (use a subquery).
+select 
+	c.contact_name
+from
+	customers c
+where
+	c.customer_id in(
+	select
+		o.customer_id
+	from
+		orders o
+	where
+		o.order_id in (
+		select
+			od.order_id
+		from
+			order_details od
+		where
+			od.product_id = (
+			select 
+				p.product_id
+			from
+				products p
+			where
+				p.product_name like 'Tofu')));
+				
+/*Show the list of customers’ names who used to order the ‘Tofu’ product, along with the total amount of the product 
+ they have ordered and with the total sum for ordered product calculated.*/
+select 
+	c.contact_name,
+	sum(od.quantity) as amounth,
+	sum(od.unit_price*od.quantity*(1-od.discount))::numeric(10,2) as sum
+from customers c
+join orders o 
+on c.customer_id = o.customer_id 
+join order_details od 
+on o.order_id = od.order_id 
+where od.product_id = (
+			select 
+				p.product_id
+			from
+				products p
+			where
+				p.product_name like 'Tofu')
+group by c.customer_id
+order by c.contact_name;				
+		
+
+--Show the list of french customers’ names who used to order non-french products (use a subquery).
+select 
+	c.contact_name
+from
+	customers c
+where
+	c.customer_id in(
+	select
+		o.customer_id
+	from
+		orders o
+	where
+		o.order_id in (
+		select
+			od.order_id
+		from
+			order_details od
+		where
+			od.product_id in (
+			select 
+				p.product_id
+			from
+				products p
+			where
+				p.supplier_id in (
+				select
+					s.supplier_id 
+				from suppliers s
+				where s.country not like 'France'))))
+	and c.country like 'France';	
+	
+/*Show the total ordering sums calculated for each customer’s country for domestic and non-domestic products 
+ separately (e.g.: “France – French products ordered – Non-french products ordered” and so on for each country).*/
+--version 1
+select 
+	o.ship_country  as ship_country,
+	sum(case 
+		when s.country = o.ship_country 
+			then od.unit_price*od.quantity*(1-od.discount)
+		else 0	
+	end)::numeric(10,2) as domestic,
+	sum(case 
+		when s.country <> o.ship_country 
+			then od.unit_price*od.quantity*(1-od.discount)
+		else 0	
+	end)::numeric(10,2) as non_domestic
+from orders o 
+join order_details od 
+on o.order_id = od.order_id 
+join products p
+on od.product_id = p.product_id 
+join suppliers s
+on p.supplier_id = s.supplier_id 
+group by o.ship_country
+order by o.ship_country;
+
+--version 2
+select 
+	o.ship_country  as ship_country,
+	t.domestic as domestic,
+	sum(od.unit_price * od.quantity *(1-od.discount))::numeric(10,2) as non_domestic
+from orders o 
+join order_details od 
+on o.order_id = od.order_id
+join products p
+on od.product_id = p.product_id
+join suppliers s
+on p.supplier_id = s.supplier_id
+	and o.ship_country <> s.country
+left join (
+	select
+		o1.ship_country as country,
+		sum(od1.unit_price * od1.quantity *(1-od1.discount))::numeric(10,2) as domestic
+	from
+		orders o1 
+	join order_details od1 
+on o1.order_id = od1.order_id
+	join products p1
+on od1.product_id = p1.product_id
+	join suppliers s1
+on p1.supplier_id = s1.supplier_id
+	where
+		o1.ship_country= s1.country
+	group by
+		o1.ship_country) as t
+on o.ship_country = t.country
+group by
+	o.ship_country,
+	t.domestic
+order by
+	o.ship_country;
+	
+--version 3
+select distinct 
+	t.country,
+	sum(t.domestic),
+	sum(t.non_domestic)
+from 
+(select
+		o1.ship_country as country,
+		sum(od1.unit_price * od1.quantity *(1-od1.discount))::numeric(10,2) as domestic,
+		null as non_domestic
+	from
+		orders o1 
+	join order_details od1 
+on o1.order_id = od1.order_id
+	join products p1
+on od1.product_id = p1.product_id
+	join suppliers s1
+on p1.supplier_id = s1.supplier_id
+	where
+		o1.ship_country= s1.country
+	group by
+		o1.ship_country
+union 
+select
+		o1.ship_country,
+		null,
+		sum(od1.unit_price * od1.quantity *(1-od1.discount))::numeric(10,2)
+	from
+		orders o1 
+	join order_details od1 
+on o1.order_id = od1.order_id
+	join products p1
+on od1.product_id = p1.product_id
+	join suppliers s1
+on p1.supplier_id = s1.supplier_id
+	where
+		o1.ship_country<> s1.country
+	group by
+		o1.ship_country) as t
+group by t.country		
+
+--In the Customers table, show the total number of customers per Country and City. 
+ select 
+	c.country,
+	c.city, 
+	count(c.customer_id) in_city
+from customers c
+group by c.country, c.city 
+order by c.country, c.city;
+
+--Categories, and the total products in each category
+select 
+	c.category_name,
+	count(p.product_id) as total_products 
+from categories c 
+left join products p 
+on c.category_id = p.category_id 
+group by c.category_name 
+order by count(p.product_id) desc;
+
+/*2. Products that need reordering
+What products do we have in our inventory that should be reordered? For now, just use the fields UnitsInStock 
+and ReorderLevel, where UnitsInStock is less than the ReorderLevel.*/
+select 
+	product_name,
+	p.units_in_stock,
+	p.reorder_level 
+from products p
+where p.units_in_stock < (
+	select
+		p1.reorder_level 
+	from products p1
+	where p.product_id=p1.product_id);
+	
+/*3. High freight charges - last year
+We  want to get the three ship countries with the highest average freight charges. 
+ But instead of filtering for a particular year, we want to use the last 12 months of order data, 
+ using as the end date the last OrderDate in Orders*/
+ select 
+	o.ship_country,
+	avg(o.freight)::numeric(10,2) as avg_freight
+from orders o
+where extract(year  from age((select 
+			max(order_date)
+			from orders ),o.order_date))<1
+group by o.ship_country 
+order by avg(o.freight) desc
+limit 3;
+
+/*Create a report that shows the product name and supplier id for all products supplied by Exotic Liquids, 
+Grandma Kelly's Homestead, and Tokyo Traders.*/
+select 
+	p.product_name,
+	p.supplier_id 
+from products p 
+where p.supplier_id in (select 
+		s.supplier_id 
+		from suppliers s 
+		where s.company_name in ('Exotic Liquids','Grandma Kelly''s Homestead','Tokyo Traders'));
+	
+--Create a report that shows all companies by name that sell products in the Dairy Products category.
+select 
+	s.company_name 
+from suppliers s 
+where supplier_id in (
+	select distinct p.supplier_id 
+	from products p
+	where p.category_id = (
+	select
+		c.category_id 
+	from categories c
+	where c.category_name like 'Dairy Products'));
