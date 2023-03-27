@@ -115,3 +115,50 @@ having avg (od.discount) > (
     select avg(discount)
     from order_details
 )
+
+
+
+
+--Calculate the average freight of all employees who work not with Western region.
+select e.first_name, e.last_name, avg(o.freight)
+from employees e
+join orders o on o.employee_id = e.employee_id
+join employee_territories et ON e.employee_id = et.employee_id
+join territories t on t.territory_id = et.territory_id
+join region r on r.region_id = t.region_id and r.region_description != 'Western'
+group by e.first_name, e.last_name
+
+
+--Show the names of products and their total cost, which were delivered by German suppliers
+select p.product_name, sum(od.unit_price * od.quantity * (1 - od.discount))::numeric(10,2) as total_cost
+from products p
+join order_details od ON od.product_id = p.product_id
+where p.supplier_id in (
+	select supplier_id
+	from suppliers
+	where country = 'Germany'
+)
+group by product_name
+
+
+--Show first and last names of employees that don’t work with Eastern region.
+select distinct e.first_name, e.last_name
+from employees e
+join employee_territories et ON e.employee_id = et.employee_id
+join territories t on t.territory_id = et.territory_id
+and t.region_id in(
+	select r.region_id
+	from region r
+	where r.region_description = 'Eastern'
+)
+
+
+--Show the name of customers that prefer to order non-domestic products.
+select c.company_name
+from customers c
+join orders o on o.customer_id = c.customer_id
+join order_details od on od.order_id = o.order_id
+join products p on p.product_id = od.product_id
+join suppliers s on s.supplier_id = p.supplier_id
+where s.country <> c.country
+group by c.company_name
