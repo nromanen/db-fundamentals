@@ -1,0 +1,45 @@
+--Show first and last names of the employees who used to serve orders shipped to Madrid. The result set would be ordered by first name.
+
+SELECT DISTINCT e.FirstName, e.LastName
+FROM Employees e INNER JOIN Orders o
+ON e.EmployeeID = o.EmployeeID
+WHERE o.ShipCity = 'Madrid'
+ORDER BY e.FirstName
+
+--Write the query, which will show the first and last names of the employees (whether they served orders or not) as well as the count of orders (CountOfOrders) where served by each of them. 
+
+SELECT e.FirstName,e.LastName,COUNT(o.OrderID) as CountOfOrders
+FROM Employees e LEFT JOIN Orders o
+ON e.EmployeeID = o.EmployeeID
+GROUP BY e.FirstName
+
+--Show the first and last names of the employees as well as the count of their orders shipped (ShippedDate) after the required date (RequiredDate) which were ordered during the year 1997 (use left join).
+
+SELECT e.FirstName,e.LastName,COUNT(o.OrderID) as CountOfOrder
+FROM Employees e LEFT JOIN Orders o
+ON e.EmployeeID = o.EmployeeID
+WHERE o.ShippedDate > o.RequiredDate AND strftime('%Y', o.OrderDate) = '1997'
+GROUP BY e.FirstName
+
+--Show category names (without duplicates) of products that where ordered by customers that are located  in Madrid
+
+SELECT DISTINCT Categories.CategoryName as Name
+FROM Categories 
+INNER JOIN Products ON Categories.CategoryID = Products.CategoryID
+INNER JOIN [Order Details] as o
+ON o.ProductID = Products.ProductID
+INNER JOIN Orders
+ON Orders.OrderID = o.OrderID
+INNER JOIN Customers
+ON Customers.CustomerID = Orders.CustomerID
+WHERE Customers.City = 'Madrid'
+
+--Show the list of french customers’ names who have made more than one order (use grouping).
+
+SELECT c.ContactName,COUNT(o.OrderID) as CountOfOrder
+FROM Customers c 
+INNER JOIN Orders o
+ON c.CustomerID = o.CustomerID
+WHERE c.Country = 'France'
+GROUP BY c.ContactName
+HAVING COUNT(o.OrderID) > 1
