@@ -1,0 +1,122 @@
+--HOMEWORK
+	--1. Create a report that shows the product name and supplier id for all products supplied by Exotic Liquids, Grandma Kelly's Homestead, and Tokyo Traders.
+	
+	select product_name, supplier_id
+	
+	from products p
+	where supplier_id in 
+		(select supplier_id 
+		from suppliers
+		where company_name in ('Exotic Liquids', 'Grandma Kelly''s Homestead', 'Tokyo Traders'));
+	
+	
+	--2. Create a report that shows all the products which are supplied by a company called ‘Pavlova, Ltd.’.
+	
+	select product_name 
+	from products
+	where supplier_id = 
+		(select supplier_id
+		from suppliers
+		where company_name like 'Pavlova, Ltd.');
+		
+	
+	--3. Create a report that shows the orders placed by all the customers excluding the customers who belongs to London city.
+	
+	select* 
+	from orders
+	where customer_id not in
+		(select customer_id
+		from customers
+		where city = 'London');
+		
+	--4. Create a report that shows all the customers if there are more than 30 orders shipped in London city.
+	
+	select company_name 
+	from customers
+	where customer_id in
+		(select customer_id 
+		from orders
+		where ship_city = 'London')
+	
+		
+	--5. Create a report that shows all the orders where the employee’s city and order’s ship city are same.
+		
+		select *
+		from orders o 
+		where o.employee_id  in 
+			(select e.employee_id 
+			from employees e 
+			where e.city = o.ship_city);
+		
+		--або
+		
+		select  *
+		from orders o
+		where o.ship_city = (
+			  select city c
+			  from employees e
+			  where o.employee_id = e.employee_id 
+			);
+      
+      
+      
+      --TASK
+      
+      --1.Show the list of customers’ names who used to order the ‘Tofu’ product (use a subquery).
+
+		select contact_name 
+		from customers
+		where customer_id in (
+			select customer_id 
+			from orders
+			where order_id in(
+				select order_id
+				from order_details
+				where product_id = (
+					select product_id
+					from products
+					where product_name = 'Tofu'
+				)
+			)
+		);	
+    
+    
+    --2. Show the list of customers’ names who used to order the ‘Tofu’ product, 
+--along with the total amount of the product they have ordered and with the total sum 
+--for ordered product calculated.(use only a subquery).
+		
+		
+	SELECT c.ContactName, SUM(od.Quantity) AS Amounth, 
+	ROUND(SUM(od.Quantity * od.UnitPrice * (1-od.Discount)), +2) AS Sum
+	FROM Customers c
+	INNER JOIN Orders o ON c.CustomerID = o.CustomerID
+	INNER JOIN [Order Details] od ON o.OrderID = od.OrderID
+	WHERE od.ProductID = (
+	    SELECT p.ProductID 
+	    FROM Products p 
+	    WHERE p.ProductName = 'Tofu'
+	)
+	GROUP BY c.ContactName
+  
+  
+  --3. Show the list of french customers’ names who used to order non-french products (use a subquery).
+	
+	select contact_name 
+	from customers 
+	where customer_id in (
+			select customer_id 
+			from orders 
+			where order_id in (
+				select order_id
+				from order_details 
+				where product_id in (
+					select product_id
+					from products
+					where supplier_id in(
+						select supplier_id
+						from suppliers 
+						where country not like 'France'
+					)
+				)
+			)	
+		) and country like 'France';
