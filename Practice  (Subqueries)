@@ -83,3 +83,60 @@ join order_details od on od.product_id = p.product_id
 group by c.category_name 
 having avg(od.discount) > (select avg(od2.discount) from order_details od2)
 
+
+
+/*1 Calculate the average freight of all employees who work not with Western region.*/
+select avg(o.freight)
+from orders o 
+where o.employee_id in 
+(select e.employee_id from employees e 
+where e.region != 'WA' or e.region is null)
+
+/*2 Show first and last names of employees who shipped orders in cities of USA.*/
+select e.first_name
+, e.last_name 
+from employees e 
+where e.employee_id in (select o.employee_id 
+from orders o
+where o.ship_country = 'USA')
+
+
+/*3 Show the names of products and their total cost, which were delivered by German suppliers */
+select p.product_name 
+, Sum(od.unit_price * od.quantity * (1 - od.discount)) :: numeric(18, 2)
+from products p 
+join order_details od on od.product_id = p.product_id 
+where p.supplier_id in (select supplier_id from suppliers s where s.country = 'Germany')
+group by p.product_name
+
+/*4 Show first and last names of employees that don’t work with Eastern region. */
+
+select e.first_name
+, e.last_name 
+from employees e
+where e.employee_id in (select et.employee_id from employee_territories et
+where et.territory_id in (select t.territory_id  from territories t 
+where t.region_id in (select r.region_id  from region r
+where r.region_description != 'Eastern')))
+
+
+/*5 Show the name of customers that prefer to order non-domestic products. */
+
+select a.company_name, a.domestic, a.non_domestic
+from (select c.company_name 
+, sum(case
+	when c.country = s.country 
+	then od.unit_price * od.quantity * (1- od.discount) 
+end) :: numeric(18,2)  as domestic
+, sum(case
+	when c.country <> s.country 
+	then od.unit_price * od.quantity * (1- od.discount) 
+end) :: numeric(18,2)  as non_domestic
+from customers c
+join orders o on c.customer_id = o.customer_id 
+join order_details od on od.order_id  = o.order_id 
+join products p on p.product_id = od.product_id 
+join suppliers s on s.supplier_id = p.supplier_id 
+group by c.company_name) as a
+where a.non_domestic > a.domestic
+
