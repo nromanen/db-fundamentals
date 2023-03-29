@@ -53,6 +53,7 @@ from employees e
 order by birth_date
 limit 3;
 
+-----------------------------------------------------------------------------------
 --HOME WORK
 --Write a query to get Product name and quantity/unit.
 select product_name, quantity_per_unit from products;
