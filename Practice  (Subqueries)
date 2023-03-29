@@ -140,3 +140,47 @@ join suppliers s on s.supplier_id = p.supplier_id
 group by c.company_name) as a
 where a.non_domestic > a.domestic
 
+/*1 Show employees (first and last name) working with orders from the United States.*/
+select concat(e.first_name,' ', e.last_name) as full_name
+from employees e 
+where e.employee_id in (select o.employee_id from orders o where o.ship_country = 'USA')
+
+/*2 Show the info about orders, that contain the cheapest products from USA.*/
+
+select *
+from orders o 
+where o.order_id in (select od.order_id from order_details od
+where od.product_id  = (select od2.product_id from order_details od2
+where od2.unit_price = (select min(od.unit_price) from order_details od 
+where od.product_id in (select p2.product_id from products p2 
+where p2.supplier_id in (select s.supplier_id  from suppliers s
+where s.country = 'USA')))
+group by od2.product_id))
+
+
+/*3 Show the info about customers that prefer to order meat products and never order drinks.*/
+
+select c.contact_name 
+from customers c 
+join orders o on o.customer_id = c.customer_id 
+join order_details od on od.order_id = o.order_id 
+join products p on p.product_id = od.product_id 
+where p.category_id in (select c2.category_id from categories c2
+where lower(c2.category_name) like '%meat%')
+and p.category_id not in (select c2.category_id from categories c2
+where lower(c2.category_name) like '%drink%')
+group by c.contact_name
+
+/*4 Show the list of cities where employees and customers are from and where orders have been made to. 
+ * Duplicates should be eliminated*/
+
+select e.city 
+from employees e
+where e.city in (select o.ship_city from orders o)
+group by e.city
+
+
+/*5 Show the lists the product names that order quantity equals to 100.*/
+select p.product_name from products p 
+where p.product_id in (select product_id from order_details od
+where od.quantity > 100)
