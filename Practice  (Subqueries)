@@ -30,3 +30,56 @@ select s.company_name
 from suppliers s 
 join products p on p.supplier_id = s.supplier_id 
 where p.unit_price = (select min(unit_price) from products)
+
+
+
+/*1 Show the name of the category in which the average price of  
+a certain product is greater than the grand average in the whole stock.*/
+
+select c.category_name 
+from categories c 
+where c.category_id in 
+(select p.category_id, p.product_id  from products p
+where p.product_id in 
+(select od.product_id from order_details od 
+where unit_price > (select avg(unit_price) from order_details od2)))
+group by c.category_name
+
+/*2 Show the name of the supplier whose delivery  is lower than the grand average in the whole stock.*/
+
+select s.company_name 
+from suppliers s 
+join products p on p.supplier_id = s.supplier_id 
+join order_details od on p.product_id = od.product_id 
+join orders o on o.order_id = od.order_id 
+where (o.shipped_date - o.order_date) < (select avg(o.shipped_date - o.order_date)
+from orders o)
+group by s.company_name 
+
+/*3 Show the regions where employees work, the middle age of which is higher than over the whole company.*/
+
+select e.region 
+from employees e 
+where date_part('Year', age(e.birth_date)) > (select avg(date_part('Year', age(e.birth_date)))
+from employees e)
+group by e.region 
+
+/*4 Show customers whose maximum freight level is less than the average for all customers. */
+
+select c.company_name,
+max(o.freight)
+from customers c 
+join orders o on o.customer_id = c.customer_id 
+group by c.company_name
+having max(o.freight) <
+(select avg(o.freight)
+from orders o)
+
+/*5 Show the categories of products for which the average discount is higher than the average discount for all products*/
+select c.category_name, avg(od.discount)
+from categories c 
+join products p on p.category_id = c.category_id 
+join order_details od on od.product_id = p.product_id 
+group by c.category_name 
+having avg(od.discount) > (select avg(od2.discount) from order_details od2)
+
