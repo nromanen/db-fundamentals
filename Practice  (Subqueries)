@@ -184,3 +184,40 @@ group by e.city
 select p.product_name from products p 
 where p.product_id in (select product_id from order_details od
 where od.quantity > 100)
+
+
+
+/*1 Show the lists the suppliers with a product price equal to 10$*/
+select s.company_name 
+from suppliers s 
+where s.supplier_id  in (select p.supplier_id from products p 
+where p.product_id in (select od.product_id  from order_details od 
+where od.unit_price = 10))
+
+/*2 Show the list of employee that perform orders with freight 1000.*/
+select concat(e.last_name, ' ', e.first_name) as full_name
+from employees e 
+where e.employee_id in (select o.employee_id from orders o where o.freight >= 1000)
+
+/*3 Find the Companies that placed orders in 1997*/
+
+select c.company_name 
+from customers c 
+where customer_id in (select o.customer_id from orders o
+where date_part('year', o.order_date) = 1997 )
+
+
+/*4 Create a report that shows all products by name that are in the Seafood category.*/
+
+select p.product_name 
+from products p 
+where p.category_id in (select c.category_id from categories c
+where lower(c.category_name) like '%seafood%')
+
+/*5 Create a report that shows all companies by name that sell products in the Dairy Products category.*/
+
+select s.company_name 
+from suppliers s 
+where s.supplier_id in (select p.supplier_id from products p
+where p.category_id in (select c.category_id from categories c
+where c.category_name like 'Dairy Products'))
