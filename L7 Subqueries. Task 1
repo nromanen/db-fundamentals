@@ -1,0 +1,53 @@
+--Show first and last names of the employees who have the biggest freight.
+
+select e.first_name,
+       e.last_name,
+       e.employee_id,
+       max(freight)
+from employees e
+         inner join orders o on e.employee_id = o.employee_id
+group by e.first_name, e.last_name, e.employee_id
+order by max(o.freight) desc
+limit 5;
+
+
+
+--Show first, last names of the employees, their freight who have the freight bigger then average
+
+select e.first_name,
+       e.last_name,
+       avg(o.freight)
+from employees e
+         inner join orders o on e.employee_id = o.employee_id
+group by o.employee_id, e.first_name, e.last_name
+having avg(o.freight) > (select avg(freight)
+                         from orders);
+
+—Show the names of products, that have the biggest price.
+
+select product_name,
+       unit_price
+from products
+where unit_price = (select max(unit_price)
+                    from products);
+
+--Show the name of customers with the freight bigger then average.
+
+select c.company_name
+from customers c
+where c.customer_id in (select o.customer_id
+                        from orders o
+                        group by customer_id
+                        having avg(freight) >
+                               (select avg(freight)
+                                from orders));
+
+--Show the name of supplier  who delivered the cheapest product.
+
+select s.company_name
+    from suppliers s
+        inner join products p on s.supplier_id = p.supplier_id
+where p.unit_price = (
+    select min(unit_price)
+    from products
+    );
