@@ -179,6 +179,35 @@ on p1.supplier_id = s1.supplier_id
 		o1.ship_country) as t
 group by t.country		
 
+--version 4
+select 
+	t.ship_country,
+	sum(t.domestic) as domestic,
+	sum(t.non_domestic) as non_domestic
+from (
+select 
+	o.ship_country  as ship_country,
+	sum(case 
+		when s.country = o.ship_country 
+			then od.unit_price*od.quantity*(1-od.discount)
+	end)::numeric(10,2) as domestic,
+	sum(case 
+		when s.country <> o.ship_country 
+			then od.unit_price*od.quantity*(1-od.discount)
+	end)::numeric(10,2) as non_domestic
+from orders o 
+join order_details od 
+on o.order_id = od.order_id 
+join products p
+on od.product_id = p.product_id 
+join suppliers s
+on p.supplier_id = s.supplier_id 
+join customers c 
+on o.customer_id = c.customer_id  
+group by o.ship_country, s.country, c.company_name) as t 
+group by t.ship_country
+order by t.ship_country;
+
 --In the Customers table, show the total number of customers per Country and City. 
  select 
 	c.country,
