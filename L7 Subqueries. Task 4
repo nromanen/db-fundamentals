@@ -38,3 +38,27 @@ where p.category_id in (
           and categories.category_name = 'Meat/Poultry'
     )
 group by c.company_name;
+
+--Show the list of cities where employees and customers are from and where orders have been made to. Duplicates should be eliminated
+
+(select e.city
+    from employees e
+group by e.city)
+union
+(select o.ship_city
+    from orders o
+group by o.ship_city)
+union
+(select c.city
+    from customers c
+group by c.city);
+
+--Show the lists the product names that order quantity equals to 100
+
+select p.product_name
+from products p
+where p.product_id in (
+    select od.product_id
+    from order_details od
+    where od.quantity = 100
+);
