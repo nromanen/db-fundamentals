@@ -1,0 +1,140 @@
+--Write a query to get most expense and least expensive Product list (name and unit price).
+
+select avg(p.unit_price) as avaregeprice, min(p2.unit_price) as minprice , max(p3.unit_price) as  maxprice 
+from products p 
+inner join products p2 
+on p.product_id  = p2.product_id 
+inner join products p3 
+on p3.product_id  = p2.product_id 
+
+--Write a query to get Product list (name, unit price) of above average price. 
+
+select product_name , unit_price 
+from products 
+where  unit_price > (select avg(unit_price) from products p)
+
+--Write a query to get Product list (name, unit price) of ten most expensive products.
+
+select product_name ,max(unit_price) 
+from products
+group by product_name 
+order by max(unit_price) desc
+limit 10
+
+-For each employee that served the order (identified by employee_id), calculate a total freight
+
+select employee_id ,sum(freight) as totalfreight
+from orders 
+group by employee_id 
+
+--Calculate the greatest, the smallest and the average age among the employees from London.
+
+select min(extract ('year' from age(e.birth_date))) as minage,max(extract ('year' from age(e2.birth_date))) as maxage,avg(extract ('year' from age(e3.birth_date))) as averageage
+from employees e 
+inner join employees e2 
+on e.employee_id = e2.employee_id 
+inner join employees e3 
+on e2.employee_id  = e3.employee_id 
+where e.city = 'London'
+
+--Calculate the greatest, the smallest and the average age of the employees for each city.
+
+select e.city , min(extract ('year' from age(e.birth_date))) as minage,max(extract ('year' from age(e2.birth_date))) as maxage,avg(extract ('year' from age(e3.birth_date))) as averageage
+from employees e 
+inner join employees e2 
+on e.employee_id = e2.employee_id 
+inner join employees e3 
+on e2.employee_id  = e3.employee_id 
+group by e.city 
+
+--Show the list of cities in which the average age of employees is greater than 60 (the average age is also to be shown)
+
+select city, avg(extract(year from age(birth_date))) 
+from employees 
+group by city
+having avg(extract(year from age(birth_date))) > 60
+
+--Show the first and last name(s) of the eldest employee(s).
+
+select first_name ,last_name ,extract(year from age(birth_date)) as age
+from employees e 
+order by extract(year from age(birth_date)) desc
+limit 1
+
+--Show first, last names and ages of 3 eldest employees.
+
+select first_name ,last_name ,extract(year from age(birth_date)) as age
+from employees e 
+order by extract(year from age(birth_date)) desc
+limit 3
+
+--------------------------------------------------------------------------HOME WORK------------------------------------------------------------------------------------------------------
+
+
+
+--Write a query to get Product name and quantity/unit. 
+
+select product_name , (units_in_stock/unit_price) as price_per_unit
+from products p 
+
+--Write a query to get current Product list (Product ID and name).
+
+select product_id || ' ' || product_name  as current_product_list
+from products 
+
+--Write a query to get discontinued Product list (Product ID and name).
+
+select product_id || ' ' || product_name  as current_product_list
+from products 
+where discontinued = 1
+
+--Write a query to get Product list (id, name, unit price) where current products cost less than $20. 
+
+select product_id ,product_name ,unit_price 
+from products p 
+where unit_price < 30
+
+--Write a query to get Product list (id, name, unit price) where products cost between $15 and $25. 
+
+select product_id ,product_name ,unit_price 
+from products p 
+where unit_price between 15 and 25
+
+--Write a query to get Product list (name, unit price) of above average price. 
+
+select product_name , unit_price 
+from products 
+where  unit_price > (select avg(unit_price) from products p)
+
+--Write a query to get Product list (name, unit price) of ten most expensive products. 
+
+select product_name , unit_price 
+from products 
+order by unit_price desc
+limit 10
+
+--Write a query to count current and discontinued products. 
+
+select count(p.product_name),p.discontinued, 'discurrent product' as Type
+from products p 
+where discontinued = 1
+group by p.discontinued 
+union 
+select count(p2.product_name) ,p2.discontinued, 'current product' as Type
+from products p2 
+where p2.discontinued = 0
+group by p2.discontinued
+
+--Write a query to get Product list (name, units on order , units in stock) of stock is less than the quantity on order. 
+
+select product_name , units_on_order ,units_in_stock 
+from products 
+where units_in_stock < units_on_order 
+group by product_name, units_on_order,units_in_stock  
+
+
+
+
+
+
+
