@@ -1,0 +1,79 @@
+--Show all info about company_name and address from the customers table.
+
+select company_name ,address 
+from customers c
+
+--Show all info about company_name and contact_person from the suppliers table.
+
+select company_name ,contact_name 
+from suppliers s 
+
+--Show all info about product_name and unit_price from the products table.
+
+select product_name , unit_price 
+from products p 
+
+--Show all info about last_name, first_name, birth_date and hire_date of employees
+
+select last_name ,first_name,birth_date ,hire_date 
+from  employees e 
+
+--Show all info about the employee with ID 8.
+
+select *
+from employees e 
+where employee_id = 8
+
+--Show the list of first and last names of the employees from London.
+
+select first_name , last_name 
+from employees e 
+where city = 'London'
+
+--Show the list of first, last names and ages of the employees whose age is greater than 55.
+
+select first_name,last_name , extract (year from age(birth_date)) as ages
+from employees e 
+where extract (year from age(birth_date)) > 55
+
+--Show the list of products with the price between 10 and 50.
+
+select *
+from products p 
+where unit_price between 10 and 50
+
+--Show the list of products which names start form ‘N’ and price is greater than 50.
+
+select *
+from products p 
+where product_name like 'N%' and unit_price > 50
+
+--Show the total number of employees which live in the same city.
+
+select city,count(employee_id)
+from employees e 
+group by city
+
+--Show the list of suppliers which name begins with letter ‘С’  and are situated in London.
+
+select * 
+from suppliers s 
+where contact_name  like 'C%' and city = 'London'
+
+--Show the list of first, last names and ages of the employees whose age is greater than average age of all employees. The result should be sorted by last name.
+
+select first_name ,last_name ,extract(year from age(birth_date)) as age
+from employees 
+where extract(year from age(birth_date)) > (select avg(extract(year from age(e.birth_date)))
+from employees e )
+order by last_name
+
+--Calculate the count of customers from Mexico and contact signed as ‘Owner’.
+
+select count(c.customer_id)
+from customers c 
+where c.country = 'Mexico' or c.contact_title = 'Owner'
+
+
+
+
