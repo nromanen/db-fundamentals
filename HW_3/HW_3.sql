@@ -21,6 +21,7 @@ order by customer_id desc;
 
 -- Get products from category with max average price
 
+
 select product_name
 , avg(unit_price)
 from products p, categories c 
