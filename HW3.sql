@@ -25,3 +25,25 @@ join products p on c.category_id = p.category_id
 group by c.category_id, c.category_name
 order by total_quantity desc
 limit 3;
+
+/* From slides */
+
+--1.	Show the list of products which names start form ‘N’ and price is greater than 50.
+select product_name, unit_price 
+from products p 
+where product_name like 'N%' and unit_price > 20
+
+--2.	Show the total number of employees which live in the same city.
+select city, count(*)
+from employees e 
+group by city 
+
+--3.	Show the list of suppliers which name begins with letter ‘A’  and are situated in London.
+select company_name
+from suppliers s
+where company_name like 'A%' and city = 'London'
+
+--4.	Calculate the count of customers from Mexico and contact signed as ‘Owner’.
+select customer_id, company_name, city 
+from customers c 
+where city like 'M%xico%' 
