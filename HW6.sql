@@ -23,7 +23,7 @@ FROM Orders
 JOIN [Order Details] ON Orders.OrderID = [Order Details].OrderID
 GROUP BY ShipCountry;
 
--- 4. Show the list of product categories along with total ordering sums (considering Discount) calculated for the orders made for the products of each category, during the year 1997.
+-- 4 X. Show the list of product categories along with total ordering sums (considering Discount) calculated for the orders made for the products of each category, during the year 1997.
 SELECT Categories.CategoryName, round(SUM([Order Details].UnitPrice * [Order Details].Quantity * (1 - [Order Details].Discount)),2) AS Sum
 FROM Products
 JOIN Categories ON Products.CategoryID = Categories.CategoryID
@@ -45,10 +45,12 @@ FROM Employees e1
 LEFT JOIN Employees e2 ON e1.ReportsTo = e2.EmployeeID;
 
 -- 7. Show the list of cities where employees and customers are from. Duplicates should be eliminated.
-SELECT City
+INSERT INTO Customers(CustomerID, CompanyName, City)
+VALUES ('ZROZR', 'CMP', 'Colchester');
+SELECT DISTINCT City
 FROM (
-  SELECT City FROM Employees
-  UNION
-  SELECT City FROM Customers
+    SELECT City FROM Employees
+    UNION ALL
+    SELECT City FROM Customers
 ) AS Cities
-GROUP BY City;
+ORDER BY City;
