@@ -1,0 +1,97 @@
+--Show first and last names of the employees who have the biggest freight.
+
+select  first_name ,last_name
+from employees e 
+where e.employee_id in (select o.employee_id  from orders o order by o.freight desc limit 1 );
+
+--Show first, last names of the employees, their freight who have the freight bigger then avarage
+
+select e.first_name , e.last_name , o.freight 
+from employees e 
+inner join orders o 
+on e.employee_id = o.employee_id 
+where o.freight > (select  avg(o2.freight)  from orders o2)
+order by o.freight;
+
+--Show the names of products, that have the biggest price.
+
+select p.product_name , p.unit_price 
+from products p 
+where p.unit_price in (select max(od.unit_price)  from order_details od);
+
+--Show the name of customers with the freight bigger then avarage.
+
+select c.contact_name, o.freight  
+from customers c 
+inner join orders o 
+on c.customer_id  = o.customer_id 
+where o.freight > (select avg(o2.freight) from orders o2)
+order by o.freight 
+
+
+--Show the name of supplier  who delivered the cheapest product.
+
+select s.contact_name
+from suppliers s 
+where s.supplier_id in (select p.supplier_id from products p  group by p.supplier_id order by min(p.unit_price) limit 1)
+
+--Show the name of the category in which the average price of  a certain product is greater than the grand average in the whole stock.
+
+
+select c.category_name, avg(p.unit_price) 
+from  categories c 
+inner join products p 
+on c.category_id  = p.category_id 
+group by c.category_id 
+having avg(p.unit_price) > (select avg(p.unit_price) from products p);
+
+--Show the name of the supplier whose delivery is lower than the grand average in the whole stock.
+
+select s.contact_name 
+from suppliers s 
+where s.supplier_id in(select p.supplier_id from products p where p.unit_price < (select avg(p2.unit_price) from products p2));
+
+--Show customers whose maximum freight level is less than the average for all customers.
+
+select c.contact_name , max(o.freight)
+from customers c 
+inner join orders o 
+on c.customer_id  = o.customer_id 
+group by c.contact_name 
+having max(o.freight) < (select avg(o2.freight)  from orders o2)
+order by max(o.freight);
+--------------------------------------------------------------------------------------HOME WORK----------------------------------------------------------------------
+--Create a report that shows the product name and supplier id for all products supplied by Exotic Liquids, Grandma Kelly's Homestead, and Tokyo Traders
+
+select p.product_name , s.supplier_id 
+from products p 
+inner join suppliers s 
+on p.supplier_id = s.supplier_id 
+where s.supplier_id in(select s2.supplier_id  from suppliers s2 where s2.company_name in('Exotic Liquids', 'Grandma Kellys Homestead', 'Tokyo Traders'))
+
+--Create a report that shows all the products which are supplied by a company called ‘Pavlova, Ltd.’.
+
+select  p.product_name 
+from products p 
+where p.supplier_id  in(select s.supplier_id  from suppliers s where s.company_name = 'Pavlova, Ltd.')
+
+--Create a report that shows the orders placed by all the customers excluding the customers who belongs to London city.
+
+select *
+from orders o 
+where o.customer_id = any (select c.customer_id  from customers c where c.city <> 'London' )
+
+--Create a report that shows all the customers if there are more than 30 orders shipped in London city
+
+select *
+from customers c 
+where c.customer_id = any
+(select o.customer_id from orders o group by o.customer_id having count(o.ship_city = 'London') > 30)
+
+
+--Create a report that shows all the orders where the employee’s city and order’s ship city are same.
+
+
+select *
+from orders o 
+where o.ship_city in (select e.city  from employees e)
