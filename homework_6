@@ -1,5 +1,5 @@
-QUESTION 1
-Show the list of french customers’ names who used to order non-french products (use left join).
+--QUESTION 1
+--Show the list of french customers’ names who used to order non-french products (use left join).
 
 SELECT DISTINCT c.ContactName AS ContactName
 FROM Customers c
@@ -9,8 +9,8 @@ LEFT JOIN Products p ON od.ProductID = p.ProductID
 LEFT JOIN Categories cat ON p.CategoryID = cat.CategoryID
 WHERE c.Country = 'France' AND cat.CategoryName <> 'French'
 
-QUESTION 2
-Show the list of french customers’ names who used to order french products.
+--QUESTION 2
+--Show the list of french customers’ names who used to order french products.
 
 SELECT DISTINCT c.ContactName  
 FROM Customers c
@@ -18,24 +18,37 @@ INNER JOIN Orders o ON c.CustomerID = o.CustomerID
 INNER JOIN "Order Details" od ON o.OrderID = od.OrderID 
 INNER JOIN Products p ON od.ProductID = p.ProductID
 INNER JOIN Suppliers s ON p.SupplierID = s.SupplierID 
-WHERE c.Country LIKE 'Fr%' AND c.Country = s.Country
-ORDER BY c.CustomerID;
+WHERE c.Country = 'France' AND s.Country = 'France'
+ORDER BY c.ContactName;
 
-QUESTION 3
-Show the total ordering sum calculated for each country where orders were shipped.
-While calculating the sum take into account the value of the discount (Discount).
+
+--QUESTION 3
+--Show the total ordering sum calculated for each country where orders were shipped.
+--While calculating the sum take into account the value of the discount (Discount).
 
 SELECT o.ShipCountry, ROUND(SUM((od.UnitPrice * od.Quantity) * (1 - od.Discount)), 2) AS Sum
 FROM Orders o
 JOIN [Order Details] od ON o.OrderID = od.OrderID
 GROUP BY o.ShipCountry
 
-QUESTION 4
+--QUESTION 4
+--Show the list of product categories along with total ordering sums (considering Discount)
+--calculated for the orders made for the products of each category, during the year 1997.
+--(думаю що код правильний, але Quiz не пропускає)
 
-QUESTION 5
-Show the list of product names along with unit prices and the history of unit prices taken from the orders 
-(show ‘Product name – Unit price – Historical price’). The duplicate records should be eliminated. If no orders were made for a certain product,
-then the result for this product should look like ‘Product name – Unit price – NULL’. Sort the list by the product name.
+SELECT c.CategoryName, SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS Sum
+FROM Categories c
+JOIN Products p ON c.CategoryID = p.CategoryID
+JOIN OrderDetails od ON p.ProductID = od.ProductID
+JOIN Orders o ON od.OrderID = o.OrderID
+WHERE o.OrderDate >= '1997-01-01' AND o.OrderDate < '1998-01-01'
+GROUP BY c.CategoryName
+ORDER BY c.CategoryName;
+
+--QUESTION 5
+--Show the list of product names along with unit prices and the history of unit prices taken from the orders 
+--(show ‘Product name – Unit price – Historical price’). The duplicate records should be eliminated. If no orders were made for a certain product,
+--then the result for this product should look like ‘Product name – Unit price – NULL’. Sort the list by the product name.
 
 SELECT DISTINCT p.ProductName as 'ProductName'
 , p.UnitPrice as 'UnitPrice'
@@ -44,6 +57,23 @@ FROM Products p
 LEFT JOIN "Order Details" od ON p.ProductID = od.ProductID 
 ORDER BY p.ProductName;
 
-QUESTION 6
+--QUESTION 6
+--Show the list of employees’ names along with names of their chiefs (use left join with the same table).
 
-QUESTION 7
+SELECT emp.LastName, emp.FirstName, chief.LastName as ChiefLastName, chief.FirstName as ChiefFirstName
+FROM Employees emp
+LEFT JOIN Employees chief ON emp.ReportsTo = chief.EmployeeID;
+
+
+--QUESTION 7
+--Show the list of cities where employees and customers are from. Duplicates should be eliminated.
+
+SELECT City
+FROM (
+  SELECT City FROM Employees
+  UNION
+  SELECT City FROM Customers
+) AS AllCities
+GROUP BY City
+ORDER BY City;
+
