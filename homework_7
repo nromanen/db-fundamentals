@@ -1,0 +1,20 @@
+--QUESTION 1
+--Show the list of customers’ names who used to order the ‘Tofu’ product (use a subquery).
+
+SELECT ContactName
+FROM Customers
+WHERE CustomerID IN
+    (SELECT DISTINCT CustomerID
+     FROM Orders
+     JOIN [Order Details] ON Orders.OrderID = [Order Details].OrderID
+     JOIN Products ON [Order Details].ProductID = Products.ProductID
+     WHERE Products.ProductName = 'Tofu');
+
+--QUESTION 2
+
+
+--QUESTION 3
+
+
+--QUESTION 4
+
