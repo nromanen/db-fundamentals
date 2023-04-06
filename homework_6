@@ -33,6 +33,16 @@ GROUP BY o.ShipCountry
 QUESTION 4
 
 QUESTION 5
+Show the list of product names along with unit prices and the history of unit prices taken from the orders 
+(show ‘Product name – Unit price – Historical price’). The duplicate records should be eliminated. If no orders were made for a certain product,
+then the result for this product should look like ‘Product name – Unit price – NULL’. Sort the list by the product name.
+
+SELECT DISTINCT p.ProductName as 'ProductName'
+, p.UnitPrice as 'UnitPrice'
+, od.UnitPrice as 'HistoricalPrice'
+FROM Products p 
+LEFT JOIN "Order Details" od ON p.ProductID = od.ProductID 
+ORDER BY p.ProductName;
 
 QUESTION 6
 
