@@ -10,7 +10,18 @@ WHERE CustomerID IN
      JOIN Products ON [Order Details].ProductID = Products.ProductID
      WHERE Products.ProductName = 'Tofu');
 
---QUESTION 2
+--QUESTION 2( цей код працюючий, але quiz його не пропускає)
+Show the list of customers’ names who used to order the ‘Tofu’ product, 
+along with the total amount of the product they have ordered and with the total sum for ordered product calculated.
+SELECT Customers.ContactName, 
+       SUM([Order Details].Quantity) AS Amount, 
+       ROUND(SUM(([Order Details].Quantity * [Order Details].UnitPrice) * (1 - [Order Details].Discount)), 2) AS Sum
+FROM Customers
+JOIN Orders ON Customers.CustomerID = Orders.CustomerID
+JOIN [Order Details] ON Orders.OrderID = [Order Details].OrderID
+JOIN Products ON [Order Details].ProductID = Products.ProductID
+WHERE Products.ProductName = 'Tofu'
+GROUP BY Customers.ContactName;
 
 
 --QUESTION 3
