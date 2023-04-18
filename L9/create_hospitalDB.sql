@@ -4,16 +4,6 @@ CREATE TABLE departments  (
    department_head_id  integer
 );
 
-
-DROP TABLE IF EXISTS departments;
-DROP TABLE IF EXISTS doctors;
-DROP TABLE IF EXISTS examinations;
-DROP TABLE IF EXISTS hospitalizations;
-DROP TABLE IF EXISTS placements;
-DROP TABLE IF EXISTS patients;
-
-
-
 CREATE TABLE doctors  (
    doctor_id  serial PRIMARY KEY,
    first_name  varchar(50) not null,
@@ -58,7 +48,7 @@ CREATE TABLE patients  (
    email  varchar(255) unique
 );
 
-ALTER TABLE doctors ADD FOREIGN KEY (doctor_id) REFERENCES departments (department_head_id);
+ALTER TABLE departments ADD FOREIGN KEY (department_head_id) REFERENCES doctors (doctor_id);
 
 ALTER TABLE doctors ADD FOREIGN KEY (department_id) REFERENCES departments (department_id);
 
@@ -71,3 +61,11 @@ ALTER TABLE hospitalizations ADD FOREIGN KEY (doctor_id) REFERENCES doctors (doc
 ALTER TABLE hospitalizations ADD FOREIGN KEY (patient_id) REFERENCES patients (patient_id);
 
 ALTER TABLE hospitalizations ADD FOREIGN KEY (placement_id) REFERENCES placements (placement_id);
+
+
+--DROP TABLE IF EXISTS departments;
+--DROP TABLE IF EXISTS doctors;
+--DROP TABLE IF EXISTS examinations;
+--DROP TABLE IF EXISTS hospitalizations;
+--DROP TABLE IF EXISTS placements;
+--DROP TABLE IF EXISTS patients;
