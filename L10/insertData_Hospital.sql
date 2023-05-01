@@ -49,8 +49,12 @@ INSERT INTO doctors(first_name, last_name, specialization, phone_number, departm
 VALUES ('Robert','Chase', 'Surgeon, intensive care specialist', '+7532149', null);
 
 UPDATE doctors
-SET department_id = 7
+SET department_id = 1
 WHERE doctor_id=6
+
+select * from departments d  
+select * from doctors d2 
+
 
 INSERT INTO departments(department_name, department_head_id)
 VALUES ('Neurology', '1');
@@ -79,7 +83,7 @@ VALUES ('Some initial diagnosis 4', '2022-11-04', null, 3, 5, 3),
 ('Some initial diagnosis 4', '2022-11-04', null, 1, 8, 4);
 
 
-INSERT INTO examinations(symptoms_description, diagnosis, diagnosis_date, doctor_id, hospitalization_id)
+insert INTO examinations(symptoms_description, diagnosis, diagnosis_date, doctor_id, hospitalization_id)
 VALUES ('Abdominal pain in adults', null, '2023-01-12', 1, 1);
 INSERT INTO examinations(symptoms_description, diagnosis, diagnosis_date, doctor_id, hospitalization_id)
 VALUES ('Cough in adults', null, '2022-11-20', 2, 2);
