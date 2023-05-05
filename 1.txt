@@ -3,6 +3,13 @@ pass: 123
 
 users: Ostapenko_manager
 pass: 123
+----------------------------------
+https://docs.google.com/spreadsheets/d/1Q4smJTdbD1U5LWxZXAnEuk1nplVXMdxRHWM_ckdPj5U/edit#gid=1980025749
+https://dbdiagram.io/d
+
+https://github.com/nromanen/db-fundamentals/tree/ch-166-3/roman-sitko
+https://github.com/Sf-Project-Labs/db-fundamentals-part-2-tetianadivnych
+https://github.com/Sf-Project-Labs/db-fundamentals-part-2-romkomp
 
 ------------------------------------
 --enter bu admin
