@@ -18,7 +18,7 @@ class Repository:
         result = []
         for record in records:
             one_line = {}
-            for index in range(len(record) - 1):
+            for index in range(len(record)):
                 one_line[column_names[index]] = record[index]
             result.append(Base(**one_line))
         return result
