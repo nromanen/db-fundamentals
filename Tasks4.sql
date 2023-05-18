@@ -1,3 +1,15 @@
+--Task from Discord
+select concat(e.first_name, ' ', e.last_name) as full_name
+--, extract (year from age(e.hire_date)) as years_at_work
+--, e.hire_date, 
+, case when extract (year from age(e.hire_date)) < 30 then 'less than 30'
+	when extract (year from age(e.hire_date)) = 30 then 'exactly 30'
+	else 'more than 30' end
+	as years_at_work_group
+from employees e 
+
+--TASKS FROM LMS
+
 --Q1
 --We have a table Orders. 
 --Show the date of the first order ever made in the Orders table.
