@@ -60,6 +60,27 @@ select first_name, last_name, first_name || ' ' || last_name as full_name
 from employees e 
 ----------------------------------------------
 
+--9) For the orders with OrderID in range 10250 ..10259 create a new field, TotalPrice, that multiplies UnitPrice and 
+--   Quantity together. We’ll ignore the Discount field for now. In addition, show the OrderID, ProductID, UnitPrice, 
+--   and Quantity. Order by OrderID and ProductID.
 
+select 
+	order_id,
+	product_id, 
+	unit_price,
+	quantity,
+	(unit_price * quantity) as total_price
+from order_details od 
+where order_id between 10250 and 10259
+order by order_id, product_id 
+----------------------------------------------
+
+--10) How many customers do we have in Germany? The result set should contain only one value. Note. In order to get 
+      the total number of customers in Germany, we need to use what’s called an aggregate function.
+
+select count(*) 
+from customers c 
+where country = 'Germany'
+----------------------------------------------
 
 
