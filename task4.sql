@@ -18,3 +18,22 @@ Group by
 ORDER BY
     NumberOfCustomers DESC,
     country ASC 
+----------------------------------------------
+
+-- 3) Show a list of all the different values in the Customers table for ContactTitles. Also include a count for each ContactTitle (alias TotalContactTitle). 
+      The result set should be sorted in descending order by TotalContactTitle.
+      Note. The answer for this problem builds on multiple concepts, such as grouping, aggregate functions, and aliases.
+
+select  
+	country,
+	COUNT(customer_id) as NumberOfCustomers 
+from customers c
+Group by 
+	country  
+HAVING COUNT(customer_id) >= 3
+ORDER BY 
+    NumberOfCustomers DESC,
+    country ASC
+----------------------------------------------
+
+--4) 
