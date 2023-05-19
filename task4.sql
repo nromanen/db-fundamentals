@@ -36,4 +36,19 @@ ORDER BY
     country ASC
 ----------------------------------------------
 
---4) 
+--4) Write a query that should show the list of CategoryID, the number of all products within each category (NumberOfProducts) only for those products 
+     with the value UnitsInStock less than UnitsOnOrder. These two columns should be included in the result as well. Moreover, the report should contain only 
+     the rows where NumberOfProducts is more than 1. 
+     The result set should be sorted in ascending order by NumberOfProducts.
+     Note. The answer for this problem builds on multiple concepts, such as grouping, aggregate functions, and aliases.
+
+select DISTINCT 
+	contact_title,
+	COUNT(contact_title) as TotalContactTitle 
+from customers c
+Group by 
+	contact_title 
+ORDER BY 
+	TotalContactTitle DESC,  
+	contact_title
+	
