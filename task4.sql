@@ -52,3 +52,54 @@ ORDER BY
 	TotalContactTitle DESC,  
 	contact_title
 	
+--5) Write a query that should show the list of CategoryID, the number of all products within each category (NumberOfProducts) only for those products with the value UnitsInStock less than UnitsOnOrder. These two columns should be included in the result as well. Moreover, the report should contain only the rows where NumberOfProducts is more than 1. 
+     The result set should be sorted in ascending order by NumberOfProducts.
+     Note. The answer for this problem builds on multiple concepts, such as grouping, aggregate functions, and aliases.
+
+
+----------------------------------------------
+
+--6) We want to show the number of orders (NumberOfOrders) and the average Freight (AverageFreight) shipped to any Latin American country. But we don’t have a list of Latin American countries 
+     in a table in the Northwind database. So, we’re going to just use this list of Latin American countries that happen to be in the Orders table: Brazil, Mexico, Argentina, and Venezuela.
+     The value AverageFreight should be rounded to the 2nd digit after the decimal point. Use this column for ascending order.
+     Note. You need to use ROUND(<value>, 2) function for average result. 
+     The answer for this problem builds on multiple concepts, such as grouping, aggregate functions, and aliases.
+
+SELECT 
+	ship_country,
+	COUNT(order_id) as NumberOfOrders,
+	round(cast(AVG(freight) as numeric), 2) as AverageFreight
+FROM orders o
+WHERE ship_country IN ('Brazil', 'Mexico', 'Argentina', 'Venezuela')
+GROUP BY ship_country 
+ORDER BY NumberOfOrders
+----------------------------------------------
+
+--7) Create a report about the total sum (TotalOrder) of each order, where the discount was used. Use the expression UnitPrice * Quantity * (1 - Discount). 
+     The value TotalOrder should be rounded to the 2nd digit after the decimal point. Use this column for sorting in descending order.
+     The result should contain only the rows with TotalOrder greater than 5000.
+     Note. You need to use ROUND(<value>, 2) function for the sum result. 
+     The answer to this problem builds on multiple concepts, such as grouping, aggregate functions, and aliases.
+     
+select 
+	od.order_id,
+	sum(
+		round(
+			cast(od.unit_price * od.quantity * (1 - od.discount) as integer)
+			, 2)
+		) as TotalOrder 
+FROM 
+	order_details od
+where od.discount > 0
+group by od.order_id 
+having sum(
+		round(
+			cast(od.unit_price * od.quantity * (1 - od.discount) as integer)
+			, 2)
+		) > 5000
+order by TotalOrder desc
+----------------------------------------------
+
+
+
+
