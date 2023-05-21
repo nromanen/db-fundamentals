@@ -56,7 +56,16 @@ ORDER BY
      The result set should be sorted in ascending order by NumberOfProducts.
      Note. The answer for this problem builds on multiple concepts, such as grouping, aggregate functions, and aliases.
 
-
+select  distinct 
+    category_id,
+    COUNT(*) as NumberOfProducts,
+    (SELECT units_in_stock  FROM products p1 WHERE p1.units_in_stock < p1.units_on_order  AND p1.category_id  = p.category_id  ORDER BY p1.product_id  DESC LIMIT 1) as UnitsInStock,
+    (SELECT units_on_order  FROM products p1 WHERE p1.units_in_stock  < p1.units_on_order  AND p1.category_id  = p.category_id  ORDER BY p1.product_id  DESC LIMIT 1) as UnitsOnOrder
+FROM products p
+WHERE p.units_in_stock < p.units_on_order 
+GROUP BY category_id 
+HAVING COUNT(*) > 1
+ORDER BY NumberOfProducts
 ----------------------------------------------
 
 --6) We want to show the number of orders (NumberOfOrders) and the average Freight (AverageFreight) shipped to any Latin American country. But we don’t have a list of Latin American countries 
