@@ -100,6 +100,59 @@ having sum(
 order by TotalOrder desc
 ----------------------------------------------
 
+--8) Create a report about the total sum of Freight (TotalFreight) shipped by every employee within each specified year of order (OrderYear).
+     Show the result only for TotalFreight greater than 2000.
+     The result should be sorted by OrderYear and EmployeeID both ascending.
+
+     Note. You need to use function strftime('%Y', OrderDate) to extract year from date. 
+     The answer to this problem builds on multiple concepts, such as grouping, aggregate functions, and aliases.
+
+SELECT 
+    extract(year from o.order_date) as OrderYear,
+    o.employee_id AS EmployeeID,
+    SUM(freight) AS TotalFreight
+FROM orders o
+GROUP BY 
+--	strftime('%Y', o.OrderDate),
+	extract(year from o.order_date), 
+	o.employee_id 
+HAVING 
+	SUM(freight) > 2000
+ORDER BY 
+	OrderYear,
+	EmployeeID
+----------------------------------------------
+
+--9) Create a report that shows EmployeeID and the total number of late orders (NumberOfDelayedOrders) for each of them. The condition of late orders is RequiredDate less than ShippedDate.
+     The result should be sorted by NumberOfDelayedOrders descending.
+     Note. The answer to this problem builds on multiple concepts, such as grouping, aggregate functions, and aliases.
+     
+select  
+    o.employee_id AS EmployeeID,
+    COUNT(o.employee_id) as NumberOfDelayedOrders
+FROM orders o
+WHERE o.required_date < o.shipped_date  
+GROUP BY 
+	o.employee_id 
+ORDER BY 
+	NumberOfDelayedOrders DESC,
+	EmployeeID       
+----------------------------------------------
+
+--10) Create a report that displays the number of female and male employees (NumberOfEmployees) in the positions they held.
+      Note. Use the values of columns Title and TitleOfCourtesy.
+      The answer to this problem builds on multiple concepts, such as grouping, aggregate functions, and aliases.
+      
+ select  
+	e.title,
+	e.title_of_courtesy,
+	COUNT(e.employee_id) as NumberOfEmployees 
+from 
+	employees e
+group by 
+	e.Title,
+	e.title_of_courtesy    
+----------------------------------------------
 
 
 
