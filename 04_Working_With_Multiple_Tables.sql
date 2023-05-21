@@ -200,4 +200,72 @@ group by od.OrderID
 having SUM(od.UnitPrice * od.Quantity) > 10000
 order by TotalOrderAmount DESC
 
+--Task 7
 
+--We want to send all of our high-value customers a special VIP gift. We're defining high-value customers as those who have orders totaling $15,000 or more in 2016 (not including the discount). 
+--Use the alias TotalOrderAmount for the calculated column. Order by the total amount of the order, in descending order.
+
+select  c.CustomerID
+    ,c.CompanyName
+    ,SUM(od.UnitPrice * od.Quantity) as TotalOrderAmount
+from 'Order Details' as od
+inner join Orders as o
+    on od.OrderID = o.OrderID
+left outer join Customers as c
+    on o.CustomerID = c.CustomerID
+where o.OrderDate > '2016-01-01' and o.OrderDate < '2016-12-31' and o.CustomerID not NULL
+group by c.CustomerID
+having SUM(od.UnitPrice * od.Quantity) > 15000
+order by TotalOrderAmount DESC
+
+
+-- Task 8
+
+--We want to send all of our high-value customers a special VIP gift. We're defining high-value customers as orders totaling $15,000 or more in 2016.  The result set should include the column TotalOrderAmount with the total sum not including the discount, and the column TotalWithDiscount with the total sum including the discount.
+--Order by TotalWithDiscount in descending order.
+
+select  c.CustomerID
+    ,c.CompanyName
+    ,round(SUM(od.UnitPrice * od.Quantity), 2) as TotalOrderAmount
+    ,round(SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)), 2) as TotalWithDiscount 
+from 'Order Details' as od
+inner join Orders as o
+    on od.OrderID = o.OrderID
+left outer join Customers as c
+    on o.CustomerID = c.CustomerID
+where o.OrderDate > '2016-01-01' and o.OrderDate < '2016-12-31' and o.CustomerID not NULL
+group by c.CustomerID
+having round(SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)), 2) >= 15000
+order by TotalOrderAmount desc
+
+--Task 9
+
+--The Northwind mobile app developers are testing an app that customers will use to show orders. In order to make sure that even the largest orders will show up correctly on the app, they'd like some samples of orders that have lots of individual line items. Show the 10 orders with the most line items, in order of total line items.
+--Note. Using Orders and OrderDetails, you'll use Group by and count() functionality. 
+-- Use the alias TotalOrderLines for the calculated column.
+
+select o.OrderID
+    ,count(od.ProductID) as TotalOrderLines
+from Orders as o
+left outer join 'Order Details' as od
+    on o.OrderID = od.OrderID
+group by o.OrderID
+order by TotalOrderLines DESC
+limit 10
+
+-- Task 10
+
+--Some salespeople have more orders arriving late than others. Maybe they're not following up on the order process, and need more training. Which salespeople have the most orders arriving late?
+--Note. To determine which orders are late, you can use a combination of the RequiredDate and ShippedDate. It's not exact, but if ShippedDate is actually after RequiredDate, you can be sure it's late.
+--Use the alias TotalLateOrders for the calculated column.
+--You'll need to join to the Employee table to get the last name, and also add Count to show the total late orders.
+
+select e.EmployeeID
+    ,e.LastName
+    ,count(o.OrderID) as TotalLateOrders
+from Employees as e
+left outer join Orders as o
+    on e.EmployeeID = o.EmployeeID
+    where o.ShippedDate > o.RequiredDate
+group by e.EmployeeID
+order by TotalLateOrders DESC, e.EmployeeID
