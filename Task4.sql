@@ -38,6 +38,19 @@ FROM Customers
 GROUP BY ContactTitle
 ORDER BY TotalContactTitle DESC, ContactTitle
 ---------------------------------------------------------------------------------------------------------------------------------------------
+-5
+--We have a table Products. 
+--Write a query that should show the list of CategoryID, the number of all products within each category (NumberOfProducts) only for those products with the value UnitsInStock less than UnitsOnOrder.
+--The report should contain only the rows where NumberOfProducts is more than 1. 
+--The result set should be sorted in ascending order by NumberOfProducts.
+--Note. The answer for this problem builds on multiple concepts, such as grouping, aggregate functions, and aliases.
+select categoryid, count(unitprice*unitsonorder) as NumberOfProducts
+from products p
+where unitsinstock < unitsonorder
+group by categoryid
+having NumberOfProducts > 1
+order by NumberOfProducts asc
+---------------------------------------------------------------------------------------------------------------------------------------------
 --6
 --We have a table Orders. 
 --We want to show the number of orders (NumberOfOrders) and the average Freight (AverageFreight) shipped to any Latin American country. But we don’t have a list of Latin American countries in a table in the Northwind database. So, we’re going to just use this list of Latin American countries that happen to be in the Orders table: Brazil, Mexico, Argentina, and Venezuela.
