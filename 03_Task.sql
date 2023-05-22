@@ -65,8 +65,13 @@ order by birth_date
 --show the FirstName and LastName columns from the Employees table, and then create a new column called FullName,
 --showing FirstName and LastName joined together in one column, with a space (' ') in between
 
-select first_name, last_name, concat(first_name, ' ', last_name) as full_name
-from employees
+SELECT
+    FirstName,
+    LastName,
+    FirstName || ' ' || LastName AS FullName
+FROM
+    Employees;
+
 
 
 -----------------------------------------------------------------
@@ -74,23 +79,16 @@ from employees
 --For the orders with OrderID in range 10250 ..10259 create a new field, TotalPrice, that multiplies UnitPrice and Quantity together. We’ll ignore the Discount field for now.
 --In addition, show the OrderID, ProductID, UnitPrice, and Quantity. Order by OrderID and ProductID.
 
-select
-    od.order_id,
-    od.product_id,
-    od.unit_price,
-    od.quantity,
-    (od.unit_price * od.quantity) as total_price
-from order_details od
-where od.order_id between 10250 and 10259
-order by od.order_id, od.product_id
+select OrderID, ProductID, UnitPrice, Quantity, Quantity*UnitPrice as TotalPrice
+from "Order Details"
+where OrderID between 10250 and 10259
+Order by OrderID and ProductID
 
 
 -----------------------------------------------------------------
 
 --How many customers do we have in Germany?
-select count(*) as total_customers
-from customers
-where country = 'Germany'
+select count(city) as "count(*)" from customers where country="Germany" 
 
 
 -----------------------------------------------------------------
