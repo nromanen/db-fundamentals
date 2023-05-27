@@ -1,7 +1,7 @@
 --1
 select orderid
 from [Order Details] d
-where d.discount>59
+where d.quantity>59
 group by orderid,quantity
 having count(productid)>1
 order by 1
@@ -46,6 +46,22 @@ join products p on p.productid = d.productid
 and o.orderDate between '2016-01-01' and '2016-03-31'
 and p.Categoryid = 4
 group by p.ProductName
+order by 2
+
+select CategoryName, ProductName, sum(ProductSales)
+from(
+select 'Dairy Products' CategoryName,
+    o.orderid,
+    p.ProductName,
+    round( sum (d.UnitPrice * d.Quantity*(1-Discount)), 2) ProductSales
+from Orders o
+join "Order details" d ON d.orderid = o.orderid
+join products p on p.productid = d.productid
+and o.orderDate between '2016-01-01' and '2016-03-31'
+and p.Categoryid = 4
+group by p.ProductName, o.orderid
+)
+group by CategoryName, ProductName
 order by 2
 
 --7
