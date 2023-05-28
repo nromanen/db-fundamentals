@@ -415,64 +415,18 @@ join employees e
 -- a line item on an order, with a different ProductID, but the same quantity. She remembers that the quantity was 60 or more.
 -- Show all the OrderIDs that match this, in order of OrderID.
 	
-SELECT o.order_id
-	,e.employee_id
-FROM orders AS o
-JOIN order_details AS od ON o.order_id = od.order_id
-JOIN employees AS e ON o.employee_id = e.employee_id
-GROUP BY o.order_id, e.employee_id
-ORDER BY o.order_id 
-
-select *
-from orders as o
-join order_details od
-	on od.order_id = o.order_id 
-where o.order_id in (10263, 10658, 10990, 11030)	
-
-
-
-
-select e.employee_id 
-from employees e
-where e.first_name || ' ' || e.last_name = 'Janet Leverling'
-	
-select *
-from orders as o
-join order_details od
-	on od.order_id = o.order_id 
-join employees as e
-	on o.employee_id = e.employee_id 
-	where e.first_name || ' ' || e.last_name = 'Janet Leverling'
-	and od.quantity >= 60
-
-	
-select o.OrderID
-from Orders as o
-join Employees as e
-    on e.EmployeeID = o.EmployeeID
-    where (e.FirstName || ' ' || e.LastName) = 'Janet Leverling'
-Group by o.OrderID
-having o.OrderID in (
-    select od.OrderID
-    from 'Order Details' as od
-    where od.Quantity >= 60
+SELECT od.OrderID
+FROM "Order Details" od
+WHERE EXISTS (
+    SELECT 1
+    FROM "Order Details" od2
+    WHERE od.OrderID = od2.OrderID
+        and od2.Quantity >= 60
+      AND od.Quantity = od2.Quantity
+      AND od.ProductID <> od2.ProductID
 )
-
-
-select o.OrderID
-from Orders as o
-join 'Order Details' as od
-    on od.OrderID = o.OrderID
-where od.OrderID = (
-    select od2.OrderID
-    from 'Order Details' as od2
-    join Orders as o2
-        on o2.OrderID = od2.OrderID
-    join Employees as e
-        on e.EmployeeID = o2.EmployeeID
-        where (e.FirstName || ' ' || e.LastName) <> 'Janet Leverling'
-)
-group by o.OrderID
+Group by od.OrderID
+ORDER BY od.OrderID
 
 -- Task 2
 
