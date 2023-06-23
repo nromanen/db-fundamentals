@@ -1,0 +1,147 @@
+--1.Janet Leverling, one of the salespeople, has come to you with a request.
+--She thinks that she accidentally double-entered a line item on an order, with a different ProductID,
+--but the same quantity. She remembers that the quantity was 60 or more. Show all the OrderIDs that match this, in order of OrderID.
+
+SELECT DISTINCT od1.OrderID
+FROM "Order Details" od1
+JOIN (
+  SELECT OrderID, Quantity
+  FROM "Order Details"
+  GROUP BY OrderID, Quantity
+  HAVING COUNT(ProductID) > 1
+) od2 ON od1.OrderID = od2.OrderID AND od1.Quantity = od2.Quantity
+WHERE od1.Quantity >= 60
+ORDER BY od1.OrderID
+
+--2.We know that Andrew Fuller is the Vice President of Northwind Company.
+--Create the report that shows the list of those employees (last and first name) who were hired earlier than Fuller.
+
+SELECT e1.LastName, e1.FirstName
+FROM Employees e1
+WHERE (SELECT e2.HireDate
+FROM Employees e2
+WHERE e2.LastName = 'Fuller' and e2.FirstName = 'Andrew' 
+) > HireDate
+
+--3.Write the query which should create the list of products and their unit price for products
+--with price greater than average products' unit price
+--Note. Use the subquery to get the average UnitPrice from the Products table.
+
+SELECT p1.ProductName
+  , p1.UnitPrice  
+    FROM Products p1
+    WHERE (SELECT avg(p2.UnitPrice)
+    FROM Products p2
+    ) < p1.UnitPrice
+  ORDER BY UnitPrice
+
+--4.Create the report that should show  the Companies from Germany that placed orders in 2016
+--Note. You may use STRFTIME('%Y', OrderDate) function to retrieve the year from the date
+--(the type of result would be 'string'  in this case).
+
+SELECT DISTINCT c.CompanyName
+    FROM Customers c
+JOIN Orders o ON c.CustomerID = o.CustomerID
+WHERE c.Country = 'Germany' AND strftime('%Y', o.OrderDate) = '2016'
+ORDER BY o.CustomerID
+
+--5.Create the query that should show the date when the orders were shipped (alias ShippedDate),
+--the number of orders  (NumberOfOrders) and total sum (including discount) of the orders
+--(Total) shipped at this date.  The report includes only the 1st quarter of 2016 with the number of orders greater than 3.
+--The result should be sorted by ShippedDate
+--Note. A subtotal is calculated by a sub-query for each order. The sub-query forms a table and then joined with the Orders table.
+--You may use STRFTIME('%Y', OrderDate) function to retrieve the year from the date
+--(the type of result would be 'string'  in this case).
+--Use ROUND() function for calculated sum of each order in subquery.
+
+select o.ShippedDate, count(o.OrderID) as NumberOfOrders, round(sum(sub.Total), 2) as Total 
+from Orders o
+join (
+    select od.OrderID, round(sum(od.UnitPrice * od.Quantity * (1 - od.Discount)), 2) as Total 
+    from "Order Details" od
+    group by od.OrderID) sub on  o.OrderID = sub.OrderID
+where strftime('%Y', o.ShippedDate) = '2016' and strftime('%m', o.ShippedDate) in ('01', '02', '03')
+group by o.ShippedDate
+having count(o.OrderID) > 3
+order by o.ShippedDate
+
+--6.For the category 'Dairy Products' get the list of products sold and the total sales amount including discount
+--(alias ProductSales) during the 1st quarter of 2016 year.
+--Note. Use the subquery to get sales for each product on each order. Join the table from the subquery with an outer query on ProductID. 
+--You may use STRFTIME('%Y', OrderDate) function to retrieve the year from the date (the type of result would be 'string'  in this case).
+--Use ROUND() function for a calculated total for each product in the subquery.
+
+select c.CategoryName, p.ProductName, round(sub.ProductSales, 2) as ProductSales 
+from Products p 
+join(
+    select od.ProductID, sum(round(od.UnitPrice * od.Quantity * (1 - od.Discount), 2)) as ProductSales
+    from "Order Details" od
+    join Orders o on od.OrderID = o.OrderID
+    where strftime('%Y', o.OrderDate) = '2016' and strftime('%m', o.OrderDate) in ('01', '02', '03') 
+    group by od.ProductID
+) sub on p.ProductID = sub.ProductID
+join Categories c on p.CategoryID = c.CategoryID
+where c.CategoryName = 'Dairy Products'
+order by p.ProductName
+
+--7.Andrew, the VP of sales, wants to know the name of the company that placed order 10290.
+
+select c.CompanyName
+from Customers c
+join Orders o on c.CustomerID = o.CustomerID
+where OrderID = '10290'
+
+--8.Some salespeople have more orders arriving late than others. Maybe they're not following up on the order process,
+--and need more training. Andrew, the VP of sales, has been doing some more thinking some more about the problem of late orders.
+--He realizes that just looking at the number of orders arriving late for each salesperson isn't a good idea. 
+--It needs to be compared against the total number of orders per salesperson.
+--Note. To determine which orders are late, you can use a combination of the RequiredDate and ShippedDate.
+--It's not exact, but if ShippedDate is actually after RequiredDate, you can be sure it's late.
+--Use the aliases AllOrders and LateOrders for the calculated columns.
+--You'll need to join to the Employee table to get the last name, and also add Count to show the total late orders.
+
+select e.EmployeeID
+    , e.LastName
+    , count(o.OrderID) as AllOrders
+    , (
+        select count(o2.OrderID)
+        from Orders o2
+        where o2.ShippedDate >= o2.RequiredDate
+            and o2.EmployeeID = e.EmployeeID
+        ) as LateOrders  
+from Employees e
+join Orders o on e.EmployeeID = o.EmployeeID 
+group by e.EmployeeID
+
+
+--9.We know that Andrew Fuller is the Vice President of Northwind Company. Create the report that shows the list of those employees
+--(last and first name) who served more orders than Fuller did.
+
+select e.LastName, e.FirstName
+from Employees e 
+where
+    (
+    select count(o.OrderID)
+    from Orders o
+    where o.EmployeeID = e.EmployeeID
+    ) > 
+    (
+    select count(o2.OrderID)
+    from Orders o2
+    join Employees e2  on o2.EmployeeID = e2.EmployeeID
+    where e2.LastName = 'Fuller' and e2.FirstName = 'Andrew'
+    )
+
+--10.Write the query that should return the EmployeeID,  OrderID, and OrderDate.
+--The criteria for the report is that the order must be the last for each employee (maximum OrderDate)
+
+select e.EmployeeID, o.OrderID, o.OrderDate
+from Orders o
+join Employees e on o.EmployeeID = e.EmployeeID
+where o.OrderDate = (
+    select max(OrderDate)
+    from Orders o
+    where EmployeeID = e.EmployeeID
+    )
+order by e.EmployeeID
+
