@@ -518,7 +518,7 @@ group by o.ShippedDate
 
 select c.CategoryName
     ,p.ProductName
-    ,ROUND(SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)), 2) as ProductSales
+    ,SUM(ROUND(od.UnitPrice * od.Quantity * (1 - od.Discount), 2)) AS ProductSales
 from Categories c
 join Products p
     on p.CategoryID = c.CategoryID
